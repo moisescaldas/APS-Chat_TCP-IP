@@ -1,7 +1,5 @@
 package br.unip.si.aps.moises;
 
-import static org.junit.Assert.assertTrue;
-
 import org.junit.Test;
 
 import br.unip.si.aps.moises.network.ConnectionManager;
@@ -16,7 +14,6 @@ public class AppTest {
     @Test
     public void shouldAnswerWithTrue(){
     	ConnectionManager manager = new ConnectionManager();
-    	manager.run();
-    	
+    	manager.run();	
     }
 }

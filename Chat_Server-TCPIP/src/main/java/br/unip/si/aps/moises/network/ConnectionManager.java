@@ -1,5 +1,6 @@
 package br.unip.si.aps.moises.network;
 
+import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.LinkedList;
@@ -12,21 +13,20 @@ public class ConnectionManager implements Runnable{
 	private List<Socket> connections = new LinkedList<>();
 	
 	public ConnectionManager() {
-		server = ServerSocketFactory.createServerSocket(7771);
-	}
-	@Override
-	public void run() {
-		runConnectionListenerThread();
-		
-		while(true) {
-			System.out.println(connections);
-		}
+		server = ServerSocketFactory.createServerSocket(7777);
 	}
 	
+	@Override
+	public void run() {
+		runConnectionObserverThread();
+		
+	}
+	// Esse Metodo vai funcionar com o proxy do servidor
+	
 	// Esse Metodo fica recebendo novas conexões e adiciona ela para a fila
-	private void runConnectionListenerThread() {
+	private void runConnectionObserverThread() {
 		new Thread(() -> {
-			while(true) {
+			while(isServerRunning()) {
 				Socket host = ServerSocketFactory.getHostSocket(server);
 				
 				if (host != null)
@@ -34,8 +34,17 @@ public class ConnectionManager implements Runnable{
 					System.out.println("Nova Conexão com o cliente [" + host.getInetAddress() +"]");
 					connections.add(host);
 			}
-		}).run();
+		}).start();
 	}
-
-
+	private boolean isServerRunning() {
+		return !server.isClosed();
+	}
+	
+	public void closeSocket() {
+		try {
+			server.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 }
