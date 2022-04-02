@@ -1,10 +1,11 @@
 package br.unip.si.aps.moises.network;
 
+import static br.unip.si.aps.moises.factory.IOStreamFactory.createSocketPrintStream;
+import static br.unip.si.aps.moises.factory.IOStreamFactory.createSocketScanner;
+
 import java.io.PrintStream;
 import java.net.Socket;
 import java.util.Scanner;
-
-import static br.unip.si.aps.moises.factory.IOStreamFactory.*;
 
 import br.unip.si.aps.moises.util.MessageAction;
 import br.unip.si.aps.moises.util.MessageListener;
@@ -48,6 +49,6 @@ public class Session implements Runnable, MessageListener {
 	}
 	
 	public Boolean isSocketRunning() {
-		return !connection.isClosed();
+		return connection.isConnected();
 	}
 }
