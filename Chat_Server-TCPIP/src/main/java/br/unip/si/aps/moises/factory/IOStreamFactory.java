@@ -8,7 +8,7 @@ import java.util.Scanner;
 public class IOStreamFactory {
 	private IOStreamFactory() {}
 	
-	public static Scanner getSocketScanner(Socket socket) {
+	public static Scanner createSocketScanner(Socket socket) {
 		try {
 			return new Scanner(socket.getInputStream());
 		} catch (IOException e) {
@@ -16,7 +16,7 @@ public class IOStreamFactory {
 		}
 	}
 	
-	public static PrintStream getSockePrintStream(Socket socket) {
+	public static PrintStream createSocketPrintStream(Socket socket) {
 		try {
 			return new PrintStream(socket.getOutputStream());
 		} catch (IOException e) {

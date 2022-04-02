@@ -6,14 +6,14 @@ import java.net.Socket;
 import java.util.LinkedList;
 import java.util.List;
 
-import br.unip.si.aps.moises.factory.ServerSocketFactory;
+import static br.unip.si.aps.moises.factory.ServerSocketFactory.*;
 
-public class ConnectionManager implements Runnable{
+public class ProxyManager implements Runnable{
 	private ServerSocket server;
 	private List<Socket> connections = new LinkedList<>();
 	
-	public ConnectionManager() {
-		server = ServerSocketFactory.createServerSocket(7777);
+	public ProxyManager() {
+		server = createServerSocket(7777);
 	}
 	
 	@Override
@@ -21,13 +21,12 @@ public class ConnectionManager implements Runnable{
 		runConnectionObserverThread();
 		
 	}
-	// Esse Metodo vai funcionar com o proxy do servidor
-	
+
 	// Esse Metodo fica recebendo novas conexões e adiciona ela para a fila
 	private void runConnectionObserverThread() {
 		new Thread(() -> {
 			while(isServerRunning()) {
-				Socket host = ServerSocketFactory.getHostSocket(server);
+				Socket host = getHostSocket(server);
 				
 				if (host != null)
 					// Colocar LOG Aqui

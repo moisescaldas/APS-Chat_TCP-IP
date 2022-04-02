@@ -2,7 +2,7 @@ package br.unip.si.aps.moises;
 
 import org.junit.Test;
 
-import br.unip.si.aps.moises.network.ConnectionManager;
+import br.unip.si.aps.moises.network.ProxyManager;
 
 /**
  * Unit test for simple App.
@@ -13,7 +13,7 @@ public class AppTest {
      */
     @Test
     public void shouldAnswerWithTrue(){
-    	ConnectionManager manager = new ConnectionManager();
+    	ProxyManager manager = new ProxyManager();
     	manager.run();	
     }
 }

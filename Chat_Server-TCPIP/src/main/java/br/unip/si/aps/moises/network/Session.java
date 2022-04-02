@@ -4,11 +4,15 @@ import java.io.PrintStream;
 import java.net.Socket;
 import java.util.Scanner;
 
-import br.unip.si.aps.moises.factory.IOStreamFactory;
+import static br.unip.si.aps.moises.factory.IOStreamFactory.*;
+
+import br.unip.si.aps.moises.util.MessageAction;
 import br.unip.si.aps.moises.util.MessageListener;
 import lombok.EqualsAndHashCode;
 import lombok.EqualsAndHashCode.Include;
 
+
+// Classe que vai servir como proxy do servidor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Session implements Runnable, MessageListener {
 	@Include
@@ -22,25 +26,28 @@ public class Session implements Runnable, MessageListener {
 		this.serviceBus = serviceBus;
 		
 		loadObjects();
-		
 	}
 	
 	private void loadObjects() {
-		this.scanner = IOStreamFactory.getSocketScanner(connection);
-		this.printer = IOStreamFactory.getSockePrintStream(connection);
+		this.scanner = createSocketScanner(connection);
+		this.printer = createSocketPrintStream(connection);
 	}
 	
 	@Override
 	public void run() {
-		while(connection.isConnected()) {
+		while(isSocketRunning()) {
 			if (scanner.hasNext()) {
-				serviceBus.onMessage(scanner.nextLine());
+				serviceBus.onMessage(new MessageAction((Object)this, scanner.nextLine()));
 			}
 		}
 	}
 	
 	@Override
-	public void onMessage(String message) {
-		printer.println(message);
+	public void onMessage(MessageAction action) {
+		printer.println(action.getMessage());
+	}
+	
+	public Boolean isSocketRunning() {
+		return !connection.isClosed();
 	}
 }

@@ -10,15 +10,15 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import br.unip.si.aps.moises.network.ConnectionManager;
+import br.unip.si.aps.moises.network.ProxyManager;
 
 public class TesteAberturaDeConexao {
-	private ConnectionManager cm;
+	private ProxyManager cm;
 	private Thread proxyThread;
 	
 	@Before
 	public void loadObjects() {
-		cm = new ConnectionManager();
+		cm = new ProxyManager();
 		out.println("Criou os objetos");
 
 	}
