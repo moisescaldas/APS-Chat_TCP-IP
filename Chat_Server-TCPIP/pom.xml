@@ -18,14 +18,12 @@
 	</properties>
 
 	<dependencies>
-
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.11</version>
 			<scope>test</scope>
 		</dependency>
-
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
@@ -37,26 +35,22 @@
 			<artifactId>weld-se</artifactId>
 			<version>2.4.1.Final</version>
 		</dependency>
-
-		<!-- https://mvnrepository.com/artifact/javax.annotation/javax.annotation-api -->
+		<!-- https://mvnrepository.com/artifact/com.github.openjson/openjson -->
 		<dependency>
-			<groupId>javax.annotation</groupId>
-			<artifactId>javax.annotation-api</artifactId>
-			<version>1.3.2</version>
+			<groupId>com.github.openjson</groupId>
+			<artifactId>openjson</artifactId>
+			<version>1.0.12</version>
 		</dependency>
-
 		<!-- https://mvnrepository.com/artifact/javax.xml.bind/jaxb-api -->
 		<dependency>
 			<groupId>javax.xml.bind</groupId>
 			<artifactId>jaxb-api</artifactId>
 			<version>2.3.1</version>
 		</dependency>
-
-
-
 	</dependencies>
 
 	<build>
+		<finalName>ChatTCPIPServer</finalName>
 		<pluginManagement><!-- lock down plugins versions to avoid using Maven 
 				defaults (may be moved to parent pom) -->
 			<plugins>
@@ -84,7 +78,7 @@
 					<configuration>
 						<archive>
 							<manifest>
-								<mainClass>br.unip.si.aps.moises.App</mainClass>
+								<mainClass>br.unip.si.aps.moises.ServerApp</mainClass>
 							</manifest>
 						</archive>
 					</configuration>

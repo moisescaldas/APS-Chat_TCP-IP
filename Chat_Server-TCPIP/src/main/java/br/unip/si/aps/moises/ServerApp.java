@@ -3,12 +3,12 @@ package br.unip.si.aps.moises;
 import br.unip.si.aps.moises.bus.ServiceBusManager;
 import br.unip.si.aps.moises.network.ProxyManager;
 
-public class App {
+public class ServerApp {
 	private ProxyManager proxy;
 	private ServiceBusManager bus;
 	
 	public static void main( String[] args ){
-		App self = new App();
+		ServerApp self = new ServerApp();
 		self.run();
 	}
 	
@@ -16,7 +16,7 @@ public class App {
 		proxy.run();
 	}
 	
-	public App() {
+	public ServerApp() {
 		bus = new ServiceBusManager();
 		proxy = new ProxyManager(bus);
 	}

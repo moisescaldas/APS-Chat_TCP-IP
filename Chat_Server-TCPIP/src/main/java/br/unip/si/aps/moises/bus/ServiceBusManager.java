@@ -10,7 +10,6 @@ public class ServiceBusManager implements Runnable, MessageListener{
 		
 	}
 	
-	// Metodo vai chamar os serviços para fazer a orquestração
 	public void onMessage(MessageAction action) {
 		System.out.println(action.getMessage());
 		

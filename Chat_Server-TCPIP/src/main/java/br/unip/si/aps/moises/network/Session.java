@@ -3,6 +3,7 @@ package br.unip.si.aps.moises.network;
 import static br.unip.si.aps.moises.factory.IOStreamFactory.createSocketPrintStream;
 import static br.unip.si.aps.moises.factory.IOStreamFactory.createSocketScanner;
 
+import java.io.IOException;
 import java.io.PrintStream;
 import java.net.Socket;
 import java.util.Scanner;
@@ -10,6 +11,7 @@ import java.util.Scanner;
 import br.unip.si.aps.moises.util.MessageAction;
 import br.unip.si.aps.moises.util.MessageListener;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import lombok.EqualsAndHashCode.Include;
 
 
@@ -36,7 +38,7 @@ public class Session implements Runnable, MessageListener {
 	
 	@Override
 	public void run() {
-		while(isSocketRunning()) {
+		while(isClientConnected()) {
 			if (scanner.hasNext()) {
 				serviceBus.onMessage(new MessageAction((Object)this, scanner.nextLine()));
 			}
@@ -48,7 +50,16 @@ public class Session implements Runnable, MessageListener {
 		printer.println(action.getMessage());
 	}
 	
-	public Boolean isSocketRunning() {
-		return connection.isConnected();
+	public Boolean isClientConnected() {
+		try {
+			return connection.getInetAddress().isReachable(1);
+		} catch (IOException e) {
+			return false;
+		}
+	}
+
+	@Override
+	public String toString() {
+		return connection.toString();
 	}
 }
