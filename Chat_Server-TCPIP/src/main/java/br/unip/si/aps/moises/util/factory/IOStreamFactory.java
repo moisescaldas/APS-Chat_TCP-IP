@@ -1,4 +1,4 @@
-package br.unip.si.aps.moises.factory;
+package br.unip.si.aps.moises.util.factory;
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -8,19 +8,19 @@ import java.util.Scanner;
 public class IOStreamFactory {
 	private IOStreamFactory() {}
 	
-	public static Scanner createSocketScanner(Socket socket) {
+	public static Scanner socketScanner(Socket socket) {
 		try {
 			return new Scanner(socket.getInputStream());
 		} catch (IOException e) {
-			throw new RuntimeException(e);
+			return null;
 		}
 	}
 	
-	public static PrintStream createSocketPrintStream(Socket socket) {
+	public static PrintStream socketPrintStream(Socket socket) {
 		try {
 			return new PrintStream(socket.getOutputStream());
 		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}		
+			return null;
+		}
 	}
 }

@@ -12,24 +12,28 @@ import org.junit.Test;
 
 
 public class TesteAberturaDeConexao {
-	
 	@Before
 	public void loadObjects() {
 		ServerApp.main(new String[0]);
-		out.println("Rodou o servidor");
 
 	}
 	
 	@Test
+	@SuppressWarnings("unused")
 	public void teste1() throws UnknownHostException, IOException, InterruptedException {
-		Socket cliente = new Socket("localhost", 7777);
+		Socket cliente1 = new Socket("localhost", 7777);
 		Socket cliente2 = new Socket("localhost", 7777);
-		cliente.close();
-		Thread.sleep(10 * 1000);
+		cliente1.close();
+		Thread.sleep(100);
+		Socket cliente3 = new Socket("localhost", 7777);
+		cliente2.close();
+		Socket cliente4 = new Socket("localhost", 7777);
+
 
 	}
 		
 	@After
 	public void closeObjects() {
+		out.println("Teste finalizado");
 	}
 }

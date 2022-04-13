@@ -1,23 +1,9 @@
 package br.unip.si.aps.moises;
 
-import br.unip.si.aps.moises.bus.ServiceBusManager;
-import br.unip.si.aps.moises.network.ProxyManager;
+import br.unip.si.aps.moises.network.manager.NetworkProxyManager;
 
 public class ServerApp {
-	private ProxyManager proxy;
-	private ServiceBusManager bus;
-	
-	public static void main( String[] args ){
-		ServerApp self = new ServerApp();
-		self.run();
-	}
-	
-	public void run() {
-		proxy.run();
-	}
-	
-	public ServerApp() {
-		bus = new ServiceBusManager();
-		proxy = new ProxyManager(bus);
+	public static void main(String[] args) {
+		new NetworkProxyManager().run();
 	}
 }
