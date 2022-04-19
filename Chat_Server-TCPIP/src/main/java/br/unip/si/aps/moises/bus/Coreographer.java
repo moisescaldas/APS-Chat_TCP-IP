@@ -3,9 +3,9 @@ package br.unip.si.aps.moises.bus;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
-import java.util.logging.Logger;
 
 import br.unip.si.aps.moises.bus.services.Register;
+import br.unip.si.aps.moises.bus.services.Send;
 import br.unip.si.aps.moises.bus.services.Unregister;
 import br.unip.si.aps.moises.network.domain.NetworkProxy;
 import br.unip.si.aps.moises.network.manager.ConnectionPoolManager;
@@ -30,7 +30,6 @@ public class Coreographer {
 	}
 
 	public void register(MessageAction action) {
-		Logger.getGlobal().info("Iniciando Orquestração: Register Chamado");
 		var service = new Register();
 		var data = new HashMap<String, Object>();
 		var json = action.getMessage().getJSONObject("header");
@@ -44,7 +43,6 @@ public class Coreographer {
 	}
 
 	public void unregister(MessageAction action) {
-		Logger.getGlobal().info("Iniciando Orquestração: Unregister Chamado");
 		var service = new Unregister();
 		var data = new HashMap<String, Object>();
 		var json = action.getMessage().getJSONObject("header");
@@ -57,7 +55,18 @@ public class Coreographer {
 		service.exec(data);
 	}	
 	
+	public void send(MessageAction action) {
+		var service = new Send();
+		var data = new HashMap<String, Object>();
+		var json = action.getMessage().getJSONObject("header");
 
+		data.put("proxy", action.getSource());
+		data.put("pool", pool);
+		data.put("target", json.getString("from"));
+		data.put("message", action.getMessage());
+		
+		service.exec(data);
+	}
 	
 	private Method getMethod(String methodName) {
 		try {

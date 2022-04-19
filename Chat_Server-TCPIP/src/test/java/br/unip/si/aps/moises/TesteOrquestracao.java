@@ -42,10 +42,12 @@ public class TesteOrquestracao {
 	
 	@Test
 	public void testeRegistro() throws NoSuchAlgorithmException, InterruptedException {
+		Thread.currentThread();
+		Thread.sleep(5000);
 		KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA");
-		
 		generator.initialize(2048);
 		KeyPair pair = generator.generateKeyPair();
+		
 		String pbk = Base64.getEncoder().encodeToString(pair.getPublic().getEncoded());	
 		JSONObject json = JsonMessageUtil.getMessageRegistro(pbk);
 		out.println(json);
@@ -61,6 +63,47 @@ public class TesteOrquestracao {
 		if(scanner.hasNext())
 			System.out.println(scanner.nextLine());
 
+		
+	}
+	
+	@Test
+	public void testeEnvio() throws NoSuchAlgorithmException, UnknownHostException, IOException, InterruptedException {
+
+		KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA");
+
+		generator.initialize(2048);
+		String pbkA = Base64.getEncoder().encodeToString(generator.generateKeyPair().getPublic().getEncoded());
+
+		generator.initialize(2048);
+		String pbkB = Base64.getEncoder().encodeToString(generator.generateKeyPair().getPublic().getEncoded());
+
+		var socketA = new Socket("localhost", 7777);
+		var scannerA = new Scanner(socketA.getInputStream());
+		var outA = new PrintStream(socketA.getOutputStream());
+
+		
+		var socketB = new Socket("localhost", 7777);
+		var scannerB = new Scanner(socketB.getInputStream());
+		var outB = new PrintStream(socketB.getOutputStream());
+		
+		outA.println(JsonMessageUtil.getMessageRegistro(pbkA));
+		outB.println(JsonMessageUtil.getMessageRegistro(pbkB));
+
+		outA.print(JsonMessageUtil.getMessageSend(pbkB, pbkA, "ID", "If you see this, is working :)"));
+
+		Thread.currentThread();
+		Thread.sleep(5000);
+		if(scannerA.hasNext())
+			System.out.println(scannerA.nextLine());
+
+		if(scannerB.hasNext())
+			System.out.println(scannerB.nextLine());
+
+		scannerA.close();
+		socketA.close();
+		
+		scannerB.close();
+		socketB.close();
 		
 	}
 	

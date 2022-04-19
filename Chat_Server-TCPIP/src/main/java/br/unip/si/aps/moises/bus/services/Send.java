@@ -10,7 +10,9 @@ import br.unip.si.aps.moises.network.manager.ConnectionPoolManager;
 import br.unip.si.aps.moises.observer.action.MessageAction;
 import br.unip.si.aps.moises.util.JsonMessageUtil;
 
-public class Send {
+public class Send implements Service {
+	
+	@Override
 	public void exec(Map<String, Object> data) {
 		var pool = (ConnectionPoolManager) data.get("pool");
 		var originProxy = (NetworkProxy) data.get("proxy");
@@ -19,10 +21,15 @@ public class Send {
 		var message = (JSONObject) data.get("message");
 		
 		try {
-			pool.findNetworkProxyTarget(target).forEach(proxy -> {
-				proxy.onMessage(new MessageAction(null, message));
-				Logger.getGlobal().info(originProxy + " -> enviou mensagem para -> " + proxy);
-			});
+			var proxyList = pool.findNetworkProxyTarget(target);
+			
+			if (proxyList != null && proxyList.size() > 0)
+				proxyList.forEach(proxy -> {
+					proxy.onMessage(new MessageAction(null, message));
+					Logger.getGlobal().info(originProxy + " -> enviou mensagem para -> " + proxy);
+				});
+			else
+				originProxy.onMessage(new MessageAction(null, JsonMessageUtil.getMessageErro("Target Not Found")));
 			
 		}catch(Exception e) {
 			originProxy.onMessage(new MessageAction(null, JsonMessageUtil.getMessageErro(e.getMessage())));

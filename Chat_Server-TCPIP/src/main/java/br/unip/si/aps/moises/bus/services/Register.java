@@ -9,7 +9,9 @@ import br.unip.si.aps.moises.util.JsonMessageUtil;
 import lombok.Setter;
 
 @Setter
-public class Register {
+public class Register implements Service {
+	
+	@Override
 	public void exec(Map<String, Object> data) {
 		var pool = (ConnectionPoolManager) data.get("pool");
 		var proxy = (NetworkProxy) data.get("proxy");
