@@ -1,4 +1,4 @@
-package br.unip.si.aps.moises.bus;
+package br.unip.si.aps.moises.observer.action;
 
 import com.github.openjson.JSONObject;
 

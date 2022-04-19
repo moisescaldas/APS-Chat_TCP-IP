@@ -1,4 +1,4 @@
-package br.unip.si.aps.moises.util.factory;
+package br.unip.si.aps.moises.factory;
 
 import java.io.IOException;
 import java.io.PrintStream;

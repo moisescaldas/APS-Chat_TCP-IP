@@ -1,0 +1,11 @@
+{
+	"header":{
+		"target":0,
+		"from":0,
+		"id":0,
+		"method":"error"
+	},
+	"body":{
+		"message":"{message}"
+	}
+}
