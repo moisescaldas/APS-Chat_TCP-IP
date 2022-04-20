@@ -56,8 +56,8 @@ public class ConnectionPoolManager {
 
 	public List<NetworkProxy> findNetworkProxyTarget(@NonNull String target) {
 		Future<List<NetworkProxy>> proxyList = executor.submit(() -> {
-			return pool.keySet().stream().map(proxy -> {
-				return pool.get(proxy).stream().anyMatch(destiny -> destiny.equals(target)) ? proxy : null ;
+			return pool.keySet().stream().filter(proxy -> {
+				return pool.get(proxy).stream().anyMatch(destiny -> destiny.equals(target)) ? true : false ;
 			}).collect(Collectors.toList());
 		});
 		

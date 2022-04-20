@@ -24,7 +24,9 @@ public class Coreographer {
 		if(method != null) {
 			try {
 				method.invoke(this, action);
-			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {}
+			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+				((NetworkProxy) action.getSource()).onMessage(new MessageAction(null, JsonMessageUtil.getMessageErro("Mensagem Invalida!")));				
+			}
 		}else
 			((NetworkProxy) action.getSource()).onMessage(new MessageAction(null, JsonMessageUtil.getMessageErro("Metodo não reconhecido")));
 	}
@@ -62,7 +64,7 @@ public class Coreographer {
 
 		data.put("proxy", action.getSource());
 		data.put("pool", pool);
-		data.put("target", json.getString("from"));
+		data.put("target", json.getString("target"));
 		data.put("message", action.getMessage());
 		
 		service.exec(data);
@@ -71,7 +73,7 @@ public class Coreographer {
 	private Method getMethod(String methodName) {
 		try {
 			return Coreographer.class.getMethod(methodName, MessageAction.class);
-		} catch (NoSuchMethodException | SecurityException e) {
+		} catch (Exception e) {
 			return null;
 		}
 	}	

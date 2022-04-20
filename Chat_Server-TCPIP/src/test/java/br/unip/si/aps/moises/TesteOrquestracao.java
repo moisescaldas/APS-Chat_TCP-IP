@@ -40,10 +40,7 @@ public class TesteOrquestracao {
 		out = new PrintStream(socket.getOutputStream());
 	}
 	
-	@Test
 	public void testeRegistro() throws NoSuchAlgorithmException, InterruptedException {
-		Thread.currentThread();
-		Thread.sleep(5000);
 		KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA");
 		generator.initialize(2048);
 		KeyPair pair = generator.generateKeyPair();
@@ -62,49 +59,52 @@ public class TesteOrquestracao {
 		Thread.sleep(1000);
 		if(scanner.hasNext())
 			System.out.println(scanner.nextLine());
-
 		
 	}
 	
 	@Test
-	public void testeEnvio() throws NoSuchAlgorithmException, UnknownHostException, IOException, InterruptedException {
+	public void testeSend() throws NoSuchAlgorithmException, UnknownHostException, IOException, InterruptedException {
+		var generatorA = KeyPairGenerator.getInstance("RSA");
+		var generatorB = KeyPairGenerator.getInstance("RSA");
 
-		KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA");
-
-		generator.initialize(2048);
-		String pbkA = Base64.getEncoder().encodeToString(generator.generateKeyPair().getPublic().getEncoded());
-
-		generator.initialize(2048);
-		String pbkB = Base64.getEncoder().encodeToString(generator.generateKeyPair().getPublic().getEncoded());
-
+		
+		generatorA.initialize(2048);
+		var pbkA = Base64.getEncoder().encodeToString(generatorA.genKeyPair().getPublic().getEncoded());
+		
+		generatorB.initialize(2048);
+		var pbkB = Base64.getEncoder().encodeToString(generatorB.genKeyPair().getPublic().getEncoded());
+		
 		var socketA = new Socket("localhost", 7777);
-		var scannerA = new Scanner(socketA.getInputStream());
-		var outA = new PrintStream(socketA.getOutputStream());
-
-		
 		var socketB = new Socket("localhost", 7777);
+		
 		var scannerB = new Scanner(socketB.getInputStream());
-		var outB = new PrintStream(socketB.getOutputStream());
 		
-		outA.println(JsonMessageUtil.getMessageRegistro(pbkA));
-		outB.println(JsonMessageUtil.getMessageRegistro(pbkB));
-
-		outA.print(JsonMessageUtil.getMessageSend(pbkB, pbkA, "ID", "If you see this, is working :)"));
-
-		Thread.currentThread();
-		Thread.sleep(5000);
-		if(scannerA.hasNext())
-			System.out.println(scannerA.nextLine());
-
-		if(scannerB.hasNext())
-			System.out.println(scannerB.nextLine());
-
-		scannerA.close();
+		var printerA = new PrintStream(socketA.getOutputStream());
+		var printerB = new PrintStream(socketB.getOutputStream());
+		
+		printerA.println(JsonMessageUtil.getMessageRegistro(pbkA));
+		printerB.println(JsonMessageUtil.getMessageRegistro(pbkB));
+		
+		var t = new Thread(() -> {
+			while(!socketB.isClosed())
+					if(scannerB.hasNext())
+						System.out.println(scannerB.nextLine());
+		});
+		
+		t.start();
+		
+		Thread.sleep(1000);					
+		printerA.println(JsonMessageUtil.getMessageSend(pbkB, pbkA, "1234", "Olá"));
+		Thread.sleep(1000);		
+		
 		socketA.close();
-		
-		scannerB.close();
 		socketB.close();
+		scannerB.close();
+		printerA.close();
+		printerB.close();
+		t.join();
 		
+
 	}
 	
 	@After

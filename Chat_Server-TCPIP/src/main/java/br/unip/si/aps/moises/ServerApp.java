@@ -5,7 +5,8 @@ import br.unip.si.aps.moises.network.manager.NetworkProxyManager;
 
 public class ServerApp {
 	public static void main(String[] args) {
-		new NetworkProxyManager(new MessageBusManager()).run();
+		var manager = new NetworkProxyManager(new MessageBusManager());
+		manager.run();
 	}
 	
 	public static void stop() {
