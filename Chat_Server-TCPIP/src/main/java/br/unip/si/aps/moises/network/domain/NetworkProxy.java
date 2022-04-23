@@ -1,24 +1,19 @@
 package br.unip.si.aps.moises.network.domain;
 
-import static br.unip.si.aps.moises.factory.IOStreamFactory.socketPrintStream;
-import static br.unip.si.aps.moises.factory.IOStreamFactory.socketScanner;
+import static br.unip.si.aps.moises.factory.IOStreamFactory.*;
 
-import java.io.IOException;
-import java.io.PrintStream;
+import java.io.*;
 import java.net.Socket;
 import java.util.Scanner;
 import java.util.logging.Logger;
 
-import com.github.openjson.JSONException;
-import com.github.openjson.JSONObject;
+import com.github.openjson.*;
 
 import br.unip.si.aps.moises.observer.action.MessageAction;
-import br.unip.si.aps.moises.observer.listener.CloseConnectionListener;
-import br.unip.si.aps.moises.observer.listener.MessageListener;
+import br.unip.si.aps.moises.observer.listener.*;
 import br.unip.si.aps.moises.util.JsonMessageUtil;
-import lombok.EqualsAndHashCode;
-import lombok.NonNull;
-import lombok.ToString;
+
+import lombok.*;
 
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @ToString(onlyExplicitlyIncluded = true)

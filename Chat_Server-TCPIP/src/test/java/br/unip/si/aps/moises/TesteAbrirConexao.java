@@ -12,7 +12,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import br.unip.si.aps.moises.bus.MessageBusManager;
+import br.unip.si.aps.moises.bus.MessageBus;
 import br.unip.si.aps.moises.network.manager.NetworkProxyManager;
 
 public class TesteAbrirConexao {
@@ -20,7 +20,7 @@ public class TesteAbrirConexao {
 	
 	@BeforeClass
 	public static void loadObjects() {
-		(manager = new NetworkProxyManager(new MessageBusManager())).run();	
+		(manager = new NetworkProxyManager(new MessageBus())).run();	
 	}
 
 	@Test

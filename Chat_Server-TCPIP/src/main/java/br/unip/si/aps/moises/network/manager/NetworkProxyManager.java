@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.logging.Logger;
 
-import br.unip.si.aps.moises.bus.MessageBusManager;
+import br.unip.si.aps.moises.bus.MessageBus;
 import br.unip.si.aps.moises.factory.ProxyThreadFactory;
 import br.unip.si.aps.moises.network.domain.NetworkProxy;
 import br.unip.si.aps.moises.observer.listener.CloseConnectionListener;
@@ -23,7 +23,7 @@ public class NetworkProxyManager implements Runnable, CloseConnectionListener {
 		this.poolManager = new ConnectionPoolManager();
 	}
 	
-	public NetworkProxyManager(MessageBusManager busManager) {
+	public NetworkProxyManager(MessageBus busManager) {
 		this();
 		this.serviceBus = busManager.setConnectionPoolManager(poolManager);
 	}

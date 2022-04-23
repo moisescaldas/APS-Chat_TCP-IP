@@ -7,10 +7,10 @@ import br.unip.si.aps.moises.observer.action.MessageAction;
 import br.unip.si.aps.moises.observer.listener.MessageListener;
 
 
-public class MessageBusManager implements MessageListener {
+public class MessageBus implements MessageListener {
 	private Coreographer orquestrador;
 	
-	public MessageBusManager setConnectionPoolManager(ConnectionPoolManager poolManager) {
+	public MessageBus setConnectionPoolManager(ConnectionPoolManager poolManager) {
 		this.orquestrador = new Coreographer(poolManager);
 		return this;
 	}
