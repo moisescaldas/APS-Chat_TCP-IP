@@ -1,0 +1,10 @@
+{
+	"header":{
+		"target":0,
+		"from":"{from}",
+		"id":0,
+		"method":"unregister"
+	},
+	"body":{
+	}
+}
