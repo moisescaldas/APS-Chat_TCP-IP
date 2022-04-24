@@ -9,8 +9,14 @@
 ## Sobre o Trabalho
 
 ### Compilando e Executando o Servidor
-´´´
-    $ mvn clean package
-    $ docker build aps/chat_server .
-    $ docker run -p 7777:7777 -t aps/chat_server
-´´´
+```
+$ mvn clean package
+$ docker build aps/chat_server .
+$ docker run -p 7777:7777 -t aps/chat_server
+```
+
+### Compilando e Executando o Cliente
+```
+$ mvn clean package
+$ java -jar chat.jar
+```
