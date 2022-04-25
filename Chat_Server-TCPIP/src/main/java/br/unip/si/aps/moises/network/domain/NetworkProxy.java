@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 
 import com.github.openjson.*;
 
+import br.unip.si.aps.moises.bus.Coreographer;
 import br.unip.si.aps.moises.observer.action.MessageAction;
 import br.unip.si.aps.moises.observer.listener.*;
 import br.unip.si.aps.moises.util.JsonMessageUtil;
@@ -29,7 +30,7 @@ public class NetworkProxy implements Runnable, MessageListener{
 
 
 
-	public NetworkProxy(@NonNull Socket socket, @NonNull MessageListener serviceBus, @NonNull CloseConnectionListener master) {
+	public NetworkProxy(@NonNull Socket socket, @NonNull CloseConnectionListener master) {
 		this.socket = socket;
 		if ((scanner = socketScanner(socket)) == null)
 			Logger.getGlobal().warning(new RuntimeException("Client Close Connection!").getMessage());
@@ -37,7 +38,7 @@ public class NetworkProxy implements Runnable, MessageListener{
 			Logger.getGlobal().warning(new RuntimeException("Client Close Connection!").getMessage());
 
 		this.id = socket.getPort();
-		this.serviceBus = serviceBus;
+		this.serviceBus = Coreographer.getInstance();
 		this.master = master;
 	}
 

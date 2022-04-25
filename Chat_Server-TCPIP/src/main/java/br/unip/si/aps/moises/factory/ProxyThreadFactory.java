@@ -9,9 +9,10 @@ import java.util.logging.Logger;
 import br.unip.si.aps.moises.network.domain.NetworkProxy;
 import br.unip.si.aps.moises.network.manager.ConnectionPoolManager;
 import br.unip.si.aps.moises.observer.listener.CloseConnectionListener;
-import br.unip.si.aps.moises.observer.listener.MessageListener;
 
 public class ProxyThreadFactory implements ThreadFactory{
+	private static ConnectionPoolManager pool = ConnectionPoolManager.getInstance();
+	
 	private ProxyThreadFactory() {}
 
 	@Override
@@ -19,9 +20,9 @@ public class ProxyThreadFactory implements ThreadFactory{
 		return new Thread(r);
 	}
 
-	public static Thread newThread(ServerSocket socket, MessageListener serviceBus, CloseConnectionListener master, ConnectionPoolManager pool) {
+	public static Thread newThread(ServerSocket socket, CloseConnectionListener master) {
 		try {
-			NetworkProxy proxy = new NetworkProxy(socket.accept(), serviceBus, master);
+			NetworkProxy proxy = new NetworkProxy(socket.accept(), master);
 			pool.putNetworkProxy(proxy, new HashSet<String>());
 			ProxyThreadFactory factory = new ProxyThreadFactory();
 			Logger.getGlobal().info("Conexão[" + proxy + "]Aberta"

@@ -18,7 +18,6 @@ import org.junit.Test;
 
 import com.github.openjson.JSONObject;
 
-import br.unip.si.aps.moises.bus.MessageBus;
 import br.unip.si.aps.moises.network.manager.NetworkProxyManager;
 import br.unip.si.aps.moises.util.JsonMessageUtil;
 
@@ -30,7 +29,7 @@ public class TesteOrquestracao {
 	
 	@BeforeClass
 	public static void server() {
-		(manager = new NetworkProxyManager(new MessageBus())).run();
+		(manager = new NetworkProxyManager()).run();
 	}
 	
 	@Before

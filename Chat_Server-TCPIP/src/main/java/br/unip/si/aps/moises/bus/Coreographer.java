@@ -3,6 +3,7 @@ package br.unip.si.aps.moises.bus;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.logging.Logger;
 
 import br.unip.si.aps.moises.bus.services.Register;
 import br.unip.si.aps.moises.bus.services.Send;
@@ -10,13 +11,26 @@ import br.unip.si.aps.moises.bus.services.Unregister;
 import br.unip.si.aps.moises.network.domain.NetworkProxy;
 import br.unip.si.aps.moises.network.manager.ConnectionPoolManager;
 import br.unip.si.aps.moises.observer.action.MessageAction;
+import br.unip.si.aps.moises.observer.listener.MessageListener;
 import br.unip.si.aps.moises.util.JsonMessageUtil;
 
-public class Coreographer {
+public class Coreographer implements MessageListener {
+	private static Coreographer instance;
+	
 	private ConnectionPoolManager pool;
 	
-	public Coreographer(ConnectionPoolManager pool) {
-		this.pool = pool;
+	public Coreographer() {
+		this.pool = ConnectionPoolManager.getInstance();
+	}
+	
+	public static synchronized Coreographer getInstance() {
+		return instance == null ? (instance = new Coreographer()) : instance;
+	}
+	
+	@Override
+	public void onMessage(MessageAction action) {
+		Logger.getGlobal().info("Iniciando Orquestração");
+		this.execService(action);
 	}
 	
 	public void execService(MessageAction action) {

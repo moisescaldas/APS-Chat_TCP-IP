@@ -6,28 +6,20 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.logging.Logger;
 
-import br.unip.si.aps.moises.bus.MessageBus;
 import br.unip.si.aps.moises.factory.ProxyThreadFactory;
 import br.unip.si.aps.moises.network.domain.NetworkProxy;
 import br.unip.si.aps.moises.observer.listener.CloseConnectionListener;
-import br.unip.si.aps.moises.observer.listener.MessageListener;
 
 public class NetworkProxyManager implements Runnable, CloseConnectionListener {
 	private ServerSocket socket;
-	private MessageListener serviceBus;
 	private ConnectionPoolManager poolManager;
 	
 	public NetworkProxyManager() {
 		if((socket = createServerSocket(7777)) == null)
 			throw new RuntimeException();
-		this.poolManager = new ConnectionPoolManager();
+		this.poolManager = ConnectionPoolManager.getInstance();
 	}
-	
-	public NetworkProxyManager(MessageBus busManager) {
-		this();
-		this.serviceBus = busManager.setConnectionPoolManager(poolManager);
-	}
-	
+		
 	@Override
 	public void run() {
 		Logger.getGlobal().info("Servidor Aberto para comunicações");
@@ -38,7 +30,7 @@ public class NetworkProxyManager implements Runnable, CloseConnectionListener {
 		return new Thread(() -> {
 			Thread proxy;
 			while(!isProxyClosed()) {
-				if((proxy = ProxyThreadFactory.newThread(socket, serviceBus, this, poolManager)) != null) proxy.start();
+				if((proxy = ProxyThreadFactory.newThread(socket, this)) != null) proxy.start();
 			}
 		});
 	}

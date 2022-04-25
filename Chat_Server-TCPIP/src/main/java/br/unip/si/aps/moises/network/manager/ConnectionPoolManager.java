@@ -15,6 +15,14 @@ import br.unip.si.aps.moises.network.domain.NetworkProxy;
 import lombok.NonNull;
 
 public class ConnectionPoolManager {
+	private static ConnectionPoolManager instance;
+	
+	private ConnectionPoolManager() {}
+	
+	public static synchronized ConnectionPoolManager getInstance() {
+		return instance == null ? (instance = new ConnectionPoolManager()) : instance;
+	}
+	
 	private Map<NetworkProxy, Set<String>> pool = new HashMap<NetworkProxy, Set<String>>();
 	private ExecutorService executor = Executors.newFixedThreadPool(1);
 
