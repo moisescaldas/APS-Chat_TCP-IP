@@ -4,7 +4,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
+import br.unip.si.aps.moises.bus.services.Broadcast;
 import br.unip.si.aps.moises.bus.services.Register;
 import br.unip.si.aps.moises.bus.services.Send;
 import br.unip.si.aps.moises.bus.services.Unregister;
@@ -80,6 +82,16 @@ public class Coreographer implements MessageListener {
 		data.put("pool", pool);
 		data.put("target", json.getString("target"));
 		data.put("message", action.getMessage());
+		
+		service.exec(data);
+	}
+	
+	public void broadcast(MessageAction action) {
+		var service = new Broadcast();
+		var data = new HashMap<String, Object>();
+		
+		data.put("destinations", pool.getConnectionPool().keySet().stream().collect(Collectors.toList()));
+		data.put("message", action);
 		
 		service.exec(data);
 	}

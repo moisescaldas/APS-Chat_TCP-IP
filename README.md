@@ -11,7 +11,7 @@
 ### Compilando e Executando o Servidor
 ```
 $ mvn clean package
-$ docker build aps/chat_server .
+$ docker build -t aps/chat_server .
 $ docker run -p 7777:7777 -t aps/chat_server
 ```
 
