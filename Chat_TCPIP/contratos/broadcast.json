@@ -1,0 +1,13 @@
+{
+	"header":{
+		"target":0,
+		"from":"{from}",
+		"id":0,
+		"method":"broadcast"
+	},
+	"body":{
+		"share":{
+			"user":["{id}","{nickname}"]
+		}
+	}
+}

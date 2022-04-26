@@ -1,13 +1,13 @@
-package br.unip.si.aps.moises.view;
+package br.unip.si.aps.moises;
 
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.IOException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.util.Properties;
+import java.util.concurrent.ExecutorService;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -15,31 +15,39 @@ import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.UIManager;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.JOptionPane;
 
+import br.unip.si.aps.moises.domain.ApplicationIDList;
+import br.unip.si.aps.moises.domain.UserKeychain;
+import br.unip.si.aps.moises.factory.MessageEventFactory;
 import br.unip.si.aps.moises.file.ApplicationConfig;
 import br.unip.si.aps.moises.file.resolver.ApplicationFileResolver;
-import br.unip.si.aps.moises.file.resolver.KeyPairFileResolver;
+import br.unip.si.aps.moises.manager.ThreadExecutionManager;
+import br.unip.si.aps.moises.network.NetworkProxy;
+import br.unip.si.aps.moises.util.JsonMessageUtil;
+import br.unip.si.aps.moises.util.SecurityKeysUtil;
+import br.unip.si.aps.moises.view.MainFrame;
 
-public class ChatApp {
+public class ClienteApp {
 	/**
 	 * Application Components
 	 */
 	private KeyPairGenerator generator;
 	private Properties config;
+	private ExecutorService executor;
 
 	/**
 	 * SWING Components
 	 */
-	private JFrame frame;
+	private JFrame frmChatTcpip;
 	private JTextField serverIPField;
 	private JTextField serverPortField;
 	private JTextField nickNameField;
-	private JTextField keyPairPathField;
+	private JTextField keyPairField;
 
 	/**
 	 * Launch the application.
@@ -52,8 +60,8 @@ public class ChatApp {
 			public void run() {
 				try {
 					UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
-					ChatApp window = new ChatApp();
-					window.frame.setVisible(true);
+					ClienteApp window = new ClienteApp();
+					window.frmChatTcpip.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -64,7 +72,7 @@ public class ChatApp {
 	/**
 	 * Create the application.
 	 */
-	public ChatApp() {
+	public ClienteApp() {
 		loadObjects();
 		initialize();
 	}
@@ -76,6 +84,7 @@ public class ChatApp {
 		try {
 			this.generator = KeyPairGenerator.getInstance("RSA");
 			this.config = ApplicationConfig.getInstance().loadConfig();
+			this.executor = ThreadExecutionManager.getInstance().getExecutor();
 		} catch (Exception e1) {
 			throw new RuntimeException(e1);
 		}
@@ -85,12 +94,12 @@ public class ChatApp {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		frame = new JFrame();
-		frame.setResizable(false);
-		frame.setSize(315, 175);
-		frame.setTitle("Chat TCP/IP");
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setLocationRelativeTo(null);
+		frmChatTcpip = new JFrame();
+		frmChatTcpip.setResizable(false);
+		frmChatTcpip.setSize(315, 175);
+		frmChatTcpip.setTitle("Chat TCP/IP");
+		frmChatTcpip.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frmChatTcpip.setLocationRelativeTo(null);
 
 		JLabel lblNewLabel = new JLabel("Server IP:");
 
@@ -112,10 +121,10 @@ public class ChatApp {
 
 		JLabel lblNewLabel_3 = new JLabel("Keypair:");
 
-		keyPairPathField = new JTextField();
-		keyPairPathField.setColumns(10);
-		keyPairPathField.setText(config.getProperty("user.rsa.privatekey"));
-		
+		keyPairField = new JTextField();
+		keyPairField.setColumns(10);
+		keyPairField.setText(config.getProperty("user.rsa.privatekey"));
+
 
 		JButton generateKeyPairButton = new JButton("Gerar");
 		generateKeyPairButton.addActionListener(new GenerateKeyPair());
@@ -126,7 +135,7 @@ public class ChatApp {
 		JButton openApplicationButton = new JButton("Conectar");
 		openApplicationButton.addActionListener(new ConnectToServer());
 
-		GroupLayout groupLayout = new GroupLayout(frame.getContentPane());
+		GroupLayout groupLayout = new GroupLayout(frmChatTcpip.getContentPane());
 		groupLayout.setHorizontalGroup(
 				groupLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(groupLayout.createSequentialGroup()
@@ -144,7 +153,7 @@ public class ChatApp {
 										.addComponent(loadKeyPairButton)
 										.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 										.addComponent(openApplicationButton))
-								.addComponent(keyPairPathField, GroupLayout.DEFAULT_SIZE, 201, Short.MAX_VALUE)
+								.addComponent(keyPairField, GroupLayout.DEFAULT_SIZE, 201, Short.MAX_VALUE)
 								.addComponent(serverPortField, GroupLayout.DEFAULT_SIZE, 201, Short.MAX_VALUE)
 								.addComponent(serverIPField, GroupLayout.DEFAULT_SIZE, 201, Short.MAX_VALUE)
 								.addComponent(nickNameField, GroupLayout.DEFAULT_SIZE, 201, Short.MAX_VALUE))
@@ -168,7 +177,7 @@ public class ChatApp {
 						.addPreferredGap(ComponentPlacement.RELATED)
 						.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 								.addComponent(lblNewLabel_3)
-								.addComponent(keyPairPathField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+								.addComponent(keyPairField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 						.addPreferredGap(ComponentPlacement.RELATED)
 						.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 								.addComponent(generateKeyPairButton)
@@ -176,7 +185,7 @@ public class ChatApp {
 								.addComponent(openApplicationButton))
 						.addContainerGap(21, Short.MAX_VALUE))
 				);
-		frame.getContentPane().setLayout(groupLayout);
+		frmChatTcpip.getContentPane().setLayout(groupLayout);
 	}
 
 	/**
@@ -189,11 +198,19 @@ public class ChatApp {
 			new Thread(() -> {
 				generator.initialize(4096);
 				KeyPair pair = generator.generateKeyPair();
-				if (pair != null) {
-					KeyPairFileResolver.getInstance().savePublicKey(pair.getPublic(), "userkey");
-					keyPairPathField.setText(KeyPairFileResolver.getInstance().savePrivateKey(pair.getPrivate(), "userkey"));
-				} else
+				if (pair == null)
 					throw new RuntimeException("Não foi possivel gerar as chaves");
+				else {
+					config.setProperty(
+							"user.rsa.privatekey",
+							SecurityKeysUtil.encodePrivateKey(pair.getPrivate()));
+
+					config.setProperty(
+							"user.rsa.publickey",
+							SecurityKeysUtil.encodePublicKey(pair.getPublic()));
+
+					keyPairField.setText(SecurityKeysUtil.encodePublicKey(pair.getPublic()));
+				}
 			}).start();
 		}		
 	}
@@ -206,11 +223,6 @@ public class ChatApp {
 			chooser.setFileFilter(new FileNameExtensionFilter("rsa", "rsa"));
 
 			if(chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-				try {
-					keyPairPathField.setText(chooser.getSelectedFile().getCanonicalPath());
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
 			}
 		}		
 	}
@@ -219,27 +231,46 @@ public class ChatApp {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			switch (JOptionPane.showConfirmDialog(frame, "Deseja Salvar a Configuração?")) {
-			case JOptionPane.OK_OPTION:
-				config.setProperty("server.ip", serverIPField.getText());
-				config.setProperty("server.port", serverPortField.getText());
-				config.setProperty("user.name", nickNameField.getText());
-				config.setProperty("user.rsa.privatekey", keyPairPathField.getText());
-				config.setProperty("user.rsa.publickey", keyPairPathField.getText() + ".pub");				
-				break;
-			
-			case JOptionPane.NO_OPTION:
-				config.setProperty("server.ip", "");
-				config.setProperty("server.port", "");
-				config.setProperty("user.name", "");
-				config.setProperty("user.rsa.privatekey", "");
-				config.setProperty("user.rsa.publickey", "");
-				break;
-				
-			default:
-				return;
-			}
-			ApplicationConfig.getInstance().saveConfig(config);
+			loadConfiguration();
 		}
+	}
+
+	private void loadApplication() {
+		UserKeychain.newInstance(
+				SecurityKeysUtil.decodePrivateKey(config.getProperty("user.rsa.privatekey")),
+				SecurityKeysUtil.decodePublicKey(config.getProperty("user.rsa.publickey")));
+		
+		executor.submit(() -> {
+			NetworkProxy.newInstance(
+				config.getProperty("server.ip"),
+				Integer.parseInt(config.getProperty("server.port")))
+			.onMessage(MessageEventFactory.createMessageEvent(null, JsonMessageUtil.getMessageRegister(ApplicationIDList.getInstance().getDestinations().get(1)).toString()));
+			return NetworkProxy.getInstance();
+		});		
+	}
+	
+	private void loadConfiguration() {
+		config.setProperty("user.name", nickNameField.getText());
+		config.setProperty("server.ip", serverIPField.getText());
+		config.setProperty("server.port", serverPortField.getText());
+
+		int choose = JOptionPane.showConfirmDialog(frmChatTcpip, "Deseja Manter a Configuração?");
+
+		if (choose == JOptionPane.OK_OPTION) {
+			ApplicationConfig.getInstance().saveConfig(config);
+		} else if(choose == JOptionPane.NO_OPTION) {
+			Properties configSpec = new Properties();
+			configSpec.setProperty("user.name", "");
+			configSpec.setProperty("server.ip", "");
+			configSpec.setProperty("server.port", "");
+			configSpec.setProperty("user.rsa.privatekey", "");
+			configSpec.setProperty("user.rsa.publickey", "");
+			ApplicationConfig.getInstance().saveConfig(configSpec);
+		} else
+			return;
+
+		loadApplication();
+		frmChatTcpip.dispose();
+		MainFrame.main(null);		
 	}
 }
