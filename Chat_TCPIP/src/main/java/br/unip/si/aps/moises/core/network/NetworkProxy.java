@@ -38,18 +38,9 @@ public class NetworkProxy implements Runnable, MessageListener {
 	@Override
 	public void run() {
 		Logger.getGlobal().info("Proxy Iniciado para comunicações");
-		while(isSocketRunning())
-			while(scanner.hasNext()) 
-				bus.onMessage(MessageEventFactory.createMessageEvent(null, scanner.nextLine()));
+		while(scanner.hasNext()) 
+			bus.onMessage(MessageEventFactory.createMessageEvent(null, scanner.nextLine()));
 		closeObjects();
-	}
-
-	public Boolean isSocketRunning() {
-		try {
-			return socket.getInetAddress().isReachable(0);
-		} catch (Exception e) {
-			return false;
-		}
 	}
 
 	@Override
