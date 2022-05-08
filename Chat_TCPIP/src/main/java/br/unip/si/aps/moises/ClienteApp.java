@@ -5,7 +5,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.security.KeyPair;
-import java.security.KeyPairGenerator;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.logging.Logger;
@@ -41,7 +40,6 @@ public class ClienteApp {
 	/**
 	 * Application Components
 	 */
-	private KeyPairGenerator generator;
 	private Properties config;
 	private ExecutorService executor;
 
@@ -87,7 +85,6 @@ public class ClienteApp {
 	 */
 	private void loadObjects() {
 		try {
-			this.generator = KeyPairGenerator.getInstance("RSA");
 			this.config = ApplicationConfig.getInstance().loadConfig();
 			this.executor = ThreadExecutionManager.getInstance().getExecutor();
 		} catch (Exception e1) {
@@ -201,8 +198,7 @@ public class ClienteApp {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			new Thread(() -> {
-				generator.initialize(4096);
-				KeyPair pair = generator.generateKeyPair();
+				KeyPair pair = SecurityKeysUtil.newKeyPair(4096);
 				if (pair == null)
 					throw new RuntimeException("Não foi possivel gerar as chaves");
 				else {
