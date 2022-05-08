@@ -1,0 +1,13 @@
+{
+	"header":{
+		"target":"0",
+		"from":"{from}",
+		"method":"send"
+	},
+	"body":{
+		"method":"announce",
+		"announce":{
+			"user":"{name}"
+		}
+	}
+}

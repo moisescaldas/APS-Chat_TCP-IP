@@ -1,0 +1,15 @@
+{
+	"header":{
+		"target":"{target}",
+		"from":"{from}",
+		"method":"send"
+	},
+	"body":{
+		"method":"message",
+		"message":{
+			"user":"{name}",
+			"message":"{message}",
+			"dateTime":"{time}"
+		}
+	}
+}

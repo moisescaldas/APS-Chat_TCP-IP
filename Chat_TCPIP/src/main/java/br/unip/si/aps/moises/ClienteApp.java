@@ -8,6 +8,7 @@ import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
+import java.util.logging.Logger;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -21,16 +22,20 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.UIManager;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import br.unip.si.aps.moises.domain.ApplicationIDList;
-import br.unip.si.aps.moises.domain.UserKeychain;
-import br.unip.si.aps.moises.factory.MessageEventFactory;
-import br.unip.si.aps.moises.file.ApplicationConfig;
-import br.unip.si.aps.moises.file.resolver.ApplicationFileResolver;
-import br.unip.si.aps.moises.manager.ThreadExecutionManager;
-import br.unip.si.aps.moises.network.NetworkProxy;
-import br.unip.si.aps.moises.util.JsonMessageUtil;
+import br.unip.si.aps.moises.application.MainFrame;
+import br.unip.si.aps.moises.application.domain.bean.LocalUser;
+import br.unip.si.aps.moises.application.domain.manager.ApplicationIDList;
+import br.unip.si.aps.moises.application.domain.manager.RemoteUserList;
+import br.unip.si.aps.moises.application.domain.manager.ThreadExecutionManager;
+import br.unip.si.aps.moises.core.actions.AnnounceAction;
+import br.unip.si.aps.moises.core.bus.Coreographer;
+import br.unip.si.aps.moises.core.dto.Announce;
+import br.unip.si.aps.moises.core.factory.MessageEventFactory;
+import br.unip.si.aps.moises.core.file.ApplicationConfig;
+import br.unip.si.aps.moises.core.file.resolver.ApplicationFileResolver;
+import br.unip.si.aps.moises.core.network.NetworkProxy;
+import br.unip.si.aps.moises.util.JSONMessageUtil;
 import br.unip.si.aps.moises.util.SecurityKeysUtil;
-import br.unip.si.aps.moises.view.MainFrame;
 
 public class ClienteApp {
 	/**
@@ -236,19 +241,22 @@ public class ClienteApp {
 	}
 
 	private void loadApplication() {
-		UserKeychain.newInstance(
+		LocalUser.newInstance(
+				config.getProperty("user.name"),
 				SecurityKeysUtil.decodePrivateKey(config.getProperty("user.rsa.privatekey")),
 				SecurityKeysUtil.decodePublicKey(config.getProperty("user.rsa.publickey")));
-		
-		executor.submit(() -> {
-			NetworkProxy.newInstance(
-				config.getProperty("server.ip"),
-				Integer.parseInt(config.getProperty("server.port")))
-			.onMessage(MessageEventFactory.createMessageEvent(null, JsonMessageUtil.getMessageRegister(ApplicationIDList.getInstance().getDestinations().get(1)).toString()));
-			return NetworkProxy.getInstance();
-		});		
+
+		NetworkProxy.newInstance(config.getProperty("server.ip"), Integer.parseInt(config.getProperty("server.port")));
+		Coreographer.getInstance();
+		AnnounceAction.getInstance();
+		RemoteUserList.getInstance();
+		executor.submit(NetworkProxy.getInstance());
+		NetworkProxy.getInstance().onMessage(MessageEventFactory.createMessageEvent(null, JSONMessageUtil.getMessageRegister(ApplicationIDList.getInstance().getIdList().get(1)).toString()));
+		AnnounceAction.getInstance().triggerAction(new Announce(
+				SecurityKeysUtil.encodePublicKey(LocalUser.getInstance().getPublicKey()),
+				LocalUser.getInstance().getName()));
 	}
-	
+
 	private void loadConfiguration() {
 		config.setProperty("user.name", nickNameField.getText());
 		config.setProperty("server.ip", serverIPField.getText());
@@ -269,6 +277,7 @@ public class ClienteApp {
 		} else
 			return;
 
+		Logger.getGlobal().info("Aplicação iniciada");
 		loadApplication();
 		frmChatTcpip.dispose();
 		MainFrame.main(null);		

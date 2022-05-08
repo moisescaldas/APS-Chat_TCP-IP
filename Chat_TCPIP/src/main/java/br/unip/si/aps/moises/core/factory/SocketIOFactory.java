@@ -1,4 +1,4 @@
-package br.unip.si.aps.moises.factory;
+package br.unip.si.aps.moises.core.factory;
 
 import java.io.PrintStream;
 import java.net.Socket;

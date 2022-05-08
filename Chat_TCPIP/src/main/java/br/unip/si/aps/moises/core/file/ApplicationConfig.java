@@ -1,4 +1,4 @@
-package br.unip.si.aps.moises.file;
+package br.unip.si.aps.moises.core.file;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;

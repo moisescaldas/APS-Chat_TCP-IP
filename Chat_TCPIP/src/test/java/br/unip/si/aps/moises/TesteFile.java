@@ -2,7 +2,7 @@ package br.unip.si.aps.moises;
 
 import org.junit.Test;
 
-import br.unip.si.aps.moises.file.resolver.ApplicationFileResolver;
+import br.unip.si.aps.moises.core.file.resolver.ApplicationFileResolver;
 
 public class TesteFile {
 	@Test

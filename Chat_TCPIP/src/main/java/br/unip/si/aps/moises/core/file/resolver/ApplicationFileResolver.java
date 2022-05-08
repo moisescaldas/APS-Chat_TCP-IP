@@ -1,4 +1,4 @@
-package br.unip.si.aps.moises.file.resolver;
+package br.unip.si.aps.moises.core.file.resolver;
 
 import java.io.IOException;
 import java.nio.file.Files;

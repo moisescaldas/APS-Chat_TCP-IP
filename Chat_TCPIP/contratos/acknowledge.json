@@ -5,6 +5,9 @@
 		"method":"send"
 	},
 	"body":{
-		"message":"{message}"
+		"method":"acknowledge",
+		"acknowledge":{
+			"user":"{name}"
+		}
 	}
 }

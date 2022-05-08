@@ -1,4 +1,4 @@
-package br.unip.si.aps.moises.manager;
+package br.unip.si.aps.moises.application.domain.manager;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

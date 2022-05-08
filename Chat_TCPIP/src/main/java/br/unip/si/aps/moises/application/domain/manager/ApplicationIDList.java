@@ -1,4 +1,4 @@
-package br.unip.si.aps.moises.domain;
+package br.unip.si.aps.moises.application.domain.manager;
 
 import java.security.PublicKey;
 import java.util.ArrayList;
@@ -7,16 +7,16 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.logging.Logger;
 
 public class ApplicationIDList {
-	private ExecutorService executor;
-	private List<String> destinations;
-
-	
+	/**
+	 * Pattern Singleton
+	 */
 	private static ApplicationIDList instance;
 	
 	private ApplicationIDList() {
-		destinations = new ArrayList<String>();
+		idList = new ArrayList<String>();
 		executor = Executors.newFixedThreadPool(1);
 	}
 	
@@ -24,30 +24,41 @@ public class ApplicationIDList {
 		return instance == null ? (instance = new ApplicationIDList()) : instance;
 	}
 
-	public ApplicationIDList setTargetList(PublicKey target) {
+	/**
+	 * Objeto começa aqui :)
+	 */
+	private ExecutorService executor;
+	private List<String> idList;
+
+	public synchronized ApplicationIDList setTargetList(PublicKey target) {
 		executor.submit(() -> {
 		if (target == null)
-			destinations.add("0");
+			idList.add("0");
 		else {
-			destinations.add(Base64.getEncoder().encodeToString(target.getEncoded()));
+			idList.add(Base64.getEncoder().encodeToString(target.getEncoded()));
+		Logger.getGlobal().info("Adicionado Origem");
 		}});
 		return this;
 	}
 	
-	public Boolean hasInTargetList(String target) {
+	public synchronized Boolean hasInTargetList(String target) {
 		Future<Boolean> future = executor.submit(() -> {
-			return destinations.stream().anyMatch(destination -> destination.equals(target));
+			for(String id: idList) {
+				if (id.equals(target))
+					return true;
+			}
+			return false;
 		});
 		try {
 			return future.get();
 		} catch (Exception e) {
-			throw new RuntimeException();
+			return false;
 		}
 	}
 
-	public List<String> getDestinations() {
+	public List<String> getIdList() {
 		Future<List<String>> future = executor.submit(() -> {
-			return destinations;
+			return idList;
 		});
 		
 		try {
