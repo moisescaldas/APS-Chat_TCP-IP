@@ -21,17 +21,18 @@ public class Send implements Service {
 		var message = (JSONObject) data.get("message");
 		
 		try {
-			var proxyList = pool.findNetworkProxyTarget(target);
+			var proxyList = target.equals("0") 
+					? pool.getConnectionPool().keySet()
+					: pool.findNetworkProxyTarget(target);
 			
 			if (proxyList != null && proxyList.size() > 0)
-				proxyList.forEach(proxy -> {
+				proxyList.stream().filter(proxy -> !proxy.equals(originProxy)).forEach(proxy -> {
 					proxy.onMessage(new MessageAction(null, message));
 					Logger.getGlobal().info(originProxy + " -> enviou mensagem para -> " + proxy);
 				});
-			else
-				originProxy.onMessage(new MessageAction(null, JsonMessageUtil.getMessageErro("Target Not Found")));
 			
 		}catch(Exception e) {
+			Logger.getGlobal().info(e.getMessage());
 			originProxy.onMessage(new MessageAction(null, JsonMessageUtil.getMessageErro(e.getMessage())));
 		}
 	}

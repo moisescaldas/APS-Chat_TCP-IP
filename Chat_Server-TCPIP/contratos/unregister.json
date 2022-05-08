@@ -1,8 +1,8 @@
 {
 	"header":{
-		"target":0,
+		"target":"0",
 		"from":"{from}",
-		"id":0,
+		"id":"0",
 		"method":"unregister"
 	},
 	"body":{

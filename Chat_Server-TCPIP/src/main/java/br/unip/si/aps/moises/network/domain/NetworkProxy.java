@@ -45,7 +45,7 @@ public class NetworkProxy implements Runnable, MessageListener{
 	@Override
 	public void run() {
 		while(isSocketRunning()) {
-			if (scanner.hasNext()) {
+			while(scanner.hasNext()) {
 				try {				
 					serviceBus.onMessage(new MessageAction(this, new JSONObject(scanner.nextLine())));
 				}catch(JSONException e) {
@@ -65,9 +65,8 @@ public class NetworkProxy implements Runnable, MessageListener{
 
 	public Boolean isSocketRunning() {
 		try {
-			socket.getOutputStream().write(0);
-			return true;
-		} catch (IOException e) {
+			return socket.getInetAddress().isReachable(0);
+		} catch (Exception e) {
 			return false;
 		}
 	}

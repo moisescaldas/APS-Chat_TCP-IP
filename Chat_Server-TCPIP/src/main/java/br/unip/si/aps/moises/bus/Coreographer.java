@@ -3,10 +3,7 @@ package br.unip.si.aps.moises.bus;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
-import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
-import br.unip.si.aps.moises.bus.services.Broadcast;
 import br.unip.si.aps.moises.bus.services.Register;
 import br.unip.si.aps.moises.bus.services.Send;
 import br.unip.si.aps.moises.bus.services.Unregister;
@@ -31,7 +28,6 @@ public class Coreographer implements MessageListener {
 	
 	@Override
 	public void onMessage(MessageAction action) {
-		Logger.getGlobal().info("Iniciando Orquestração");
 		this.execService(action);
 	}
 	
@@ -47,6 +43,15 @@ public class Coreographer implements MessageListener {
 			((NetworkProxy) action.getSource()).onMessage(new MessageAction(null, JsonMessageUtil.getMessageErro("Metodo não reconhecido")));
 	}
 
+	private Method getMethod(String methodName) {
+		try {
+			return Coreographer.class.getMethod(methodName, MessageAction.class);
+		} catch (Exception e) {
+			return null;
+		}
+	}	
+
+	// Serviços
 	public void register(MessageAction action) {
 		var service = new Register();
 		var data = new HashMap<String, Object>();
@@ -84,23 +89,5 @@ public class Coreographer implements MessageListener {
 		data.put("message", action.getMessage());
 		
 		service.exec(data);
-	}
-	
-	public void broadcast(MessageAction action) {
-		var service = new Broadcast();
-		var data = new HashMap<String, Object>();
-		
-		data.put("destinations", pool.getConnectionPool().keySet().stream().collect(Collectors.toList()));
-		data.put("message", action);
-		
-		service.exec(data);
-	}
-	
-	private Method getMethod(String methodName) {
-		try {
-			return Coreographer.class.getMethod(methodName, MessageAction.class);
-		} catch (Exception e) {
-			return null;
-		}
 	}	
 }
