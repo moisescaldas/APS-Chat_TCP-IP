@@ -51,24 +51,6 @@
 							<goal>copy-resources</goal>
 						</goals>
 						<configuration>
-							<outputDirectory>${project.build.directory}/contratos</outputDirectory>
-							<resources>
-								<resource>
-									<directory>contratos</directory>
-									<includes>
-										<include>*.json</include>
-									</includes>
-								</resource>
-							</resources>
-						</configuration>
-					</execution>
-					<execution>
-						<id>copy-resource-two</id>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>copy-resources</goal>
-						</goals>
-						<configuration>
 							<outputDirectory>${project.build.directory}/files</outputDirectory>
 							<resources>
 								<resource>

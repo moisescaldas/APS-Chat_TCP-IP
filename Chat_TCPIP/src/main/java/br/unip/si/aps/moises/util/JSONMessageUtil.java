@@ -8,7 +8,7 @@ import com.github.openjson.JSONObject;
 public class JSONMessageUtil {	
 	private JSONMessageUtil() {}
 	
-	private final static String PREFIX = "contratos/";
+	private final static String PREFIX = "files/contratos/";
 		
 		public static JSONObject getMessageRegister(String from) {
 		try {
