@@ -9,7 +9,6 @@ import java.awt.SystemColor;
 import javax.swing.BorderFactory;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -19,8 +18,6 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.ScrollPaneConstants;
 
 import br.unip.si.aps.moises.application.custom.panel.channels.GlobalChannel;
-import br.unip.si.aps.moises.application.custom.panel.channels.HomeChannel;
-import br.unip.si.aps.moises.application.domain.bean.RemoteUser;
 import br.unip.si.aps.moises.application.domain.manager.MessageManager;
 import br.unip.si.aps.moises.application.domain.manager.RemoteUserList;
 import lombok.Getter;
@@ -74,9 +71,6 @@ public class MainFrame extends JFrame {
 		contentPane.setBorder(null);
 		setContentPane(contentPane);
 		
-		JPanel sideBar = new JPanel();
-		sideBar.setBackground(Color.WHITE);
-		
 		channelsPanel = new JPanel();
 		
 		JPanel chat = new JPanel();
@@ -85,17 +79,14 @@ public class MainFrame extends JFrame {
 		gl_contentPane.setHorizontalGroup(
 			gl_contentPane.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_contentPane.createSequentialGroup()
-					.addComponent(sideBar, GroupLayout.PREFERRED_SIZE, 40, GroupLayout.PREFERRED_SIZE)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(channelsPanel, GroupLayout.PREFERRED_SIZE, 160, GroupLayout.PREFERRED_SIZE)
+					.addComponent(channelsPanel, GroupLayout.PREFERRED_SIZE, 200, GroupLayout.PREFERRED_SIZE)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(chat, GroupLayout.DEFAULT_SIZE, 725, Short.MAX_VALUE))
 		);
 		gl_contentPane.setVerticalGroup(
 			gl_contentPane.createParallelGroup(Alignment.LEADING)
-				.addComponent(sideBar, GroupLayout.DEFAULT_SIZE, 461, Short.MAX_VALUE)
-				.addComponent(channelsPanel, GroupLayout.DEFAULT_SIZE, 461, Short.MAX_VALUE)
 				.addComponent(chat, GroupLayout.DEFAULT_SIZE, 461, Short.MAX_VALUE)
+				.addComponent(channelsPanel, GroupLayout.DEFAULT_SIZE, 461, Short.MAX_VALUE)
 		);
 
 		chatArea = new JTextArea();
@@ -111,7 +102,9 @@ public class MainFrame extends JFrame {
 		
 		JButton sendButton = new JButton("Enviar");
 		sendButton.addActionListener(event -> {
-			mm.sendMessage(textArea.getText());
+			String message;
+			if ((message = textArea.getText()).equals("")) return;
+			mm.sendMessage(message);
 			textArea.setText(null);
 		});
 		
@@ -126,10 +119,10 @@ public class MainFrame extends JFrame {
 					.addContainerGap()
 					.addGroup(gl_chat.createParallelGroup(Alignment.LEADING)
 						.addGroup(gl_chat.createSequentialGroup()
-							.addComponent(scrollPane_1, GroupLayout.PREFERRED_SIZE, 605, GroupLayout.PREFERRED_SIZE)
+							.addComponent(scrollPane_1, GroupLayout.DEFAULT_SIZE, 609, Short.MAX_VALUE)
 							.addPreferredGap(ComponentPlacement.RELATED)
 							.addComponent(sendButton, GroupLayout.PREFERRED_SIZE, 94, GroupLayout.PREFERRED_SIZE))
-						.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 705, Short.MAX_VALUE))
+						.addComponent(scrollPane))
 					.addContainerGap())
 		);
 		gl_chat.setVerticalGroup(
@@ -137,8 +130,8 @@ public class MainFrame extends JFrame {
 				.addGroup(gl_chat.createSequentialGroup()
 					.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 419, Short.MAX_VALUE)
 					.addPreferredGap(ComponentPlacement.RELATED)
-					.addGroup(gl_chat.createParallelGroup(Alignment.LEADING)
-						.addComponent(scrollPane_1)
+					.addGroup(gl_chat.createParallelGroup(Alignment.TRAILING)
+						.addComponent(scrollPane_1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 						.addComponent(sendButton))
 					.addGap(13))
 		);
@@ -146,42 +139,12 @@ public class MainFrame extends JFrame {
 		cardLayout = new CardLayout(0, 0);
 		channelsPanel.setLayout(cardLayout);
 		
-		
-		HomeChannel homeChannel = new HomeChannel();
-		homeChannel.setBackground(Color.WHITE);
-		channelsPanel.add(homeChannel, "homeCard");
-		
 		GlobalChannel globalChannel = new GlobalChannel();
-		globalChannel.setBackground(Color.LIGHT_GRAY);
+		globalChannel.setBackground(Color.WHITE);
 		channelsPanel.add(globalChannel, "globalCard");
 		
 		JPanel clean = new JPanel();
 		channelsPanel.add(clean, "clean");
-				
-		sideBar.setLayout(null);
-		
-		JButton geralButton_1 = new JButton();
-		geralButton_1.setBounds(0, 0, 40, 40);
-		geralButton_1.setOpaque(false);
-		sideBar.add(geralButton_1);
-		
-		JButton homeButton = new JButton();
-		homeButton.setBounds(0, 421, 40, 40);
-		homeButton.setIcon(new ImageIcon("files/icons/home.png"));
-		homeButton.setOpaque(false);
-		homeButton.addActionListener(event -> {
-			cardLayout.show(channelsPanel, "homeCard");
-		});
-		
-		JButton geralButton = new JButton();
-		geralButton.setBounds(0, 380, 40, 40);
-		geralButton.setIcon(new ImageIcon("files/icons/globe.png"));
-		geralButton.setOpaque(false);
-		geralButton.addActionListener(event -> {
-			cardLayout.show(channelsPanel, "globalCard");
-		});
-		sideBar.add(geralButton);
-		sideBar.add(homeButton);
 		contentPane.setLayout(gl_contentPane);
 	}
 	
@@ -192,5 +155,5 @@ public class MainFrame extends JFrame {
 	public void refreshCard() {
 		cardLayout.previous(channelsPanel);
 		cardLayout.next(channelsPanel);
-	}
+	}	
 }

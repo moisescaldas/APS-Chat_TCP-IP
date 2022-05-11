@@ -4,7 +4,6 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 
 import br.unip.si.aps.moises.application.domain.manager.ApplicationIDList;
-import br.unip.si.aps.moises.util.SecurityKeysUtil;
 import lombok.Data;
 
 @Data

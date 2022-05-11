@@ -36,7 +36,7 @@ import br.unip.si.aps.moises.core.network.NetworkProxy;
 import br.unip.si.aps.moises.util.JSONMessageUtil;
 import br.unip.si.aps.moises.util.SecurityKeysUtil;
 
-public class ClienteApp {
+public class ClientApp {
 	/**
 	 * Application Components
 	 */
@@ -63,7 +63,7 @@ public class ClienteApp {
 			public void run() {
 				try {
 					UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
-					ClienteApp window = new ClienteApp();
+					ClientApp window = new ClientApp();
 					window.frmChatTcpip.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -75,7 +75,7 @@ public class ClienteApp {
 	/**
 	 * Create the application.
 	 */
-	public ClienteApp() {
+	public ClientApp() {
 		loadObjects();
 		initialize();
 	}

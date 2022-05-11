@@ -16,6 +16,6 @@ public class MessageData {
 	}
 	
 	public String getFormatedMessage() {	
-		return author + "<" + date.toString() + "> " + message;
+		return "<" + date.toString() + ">" + author + ":" + message;
 	}
 }

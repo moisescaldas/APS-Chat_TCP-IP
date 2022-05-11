@@ -38,6 +38,7 @@ public class RemoteUserList {
 	
 	private void addUser(RemoteUser user) {
 		executor.submit(() -> {
+			if (userList.contains(user)) return;
 			userList.add(user);
 			addUserAction.actionPerformed(user);
 		});
