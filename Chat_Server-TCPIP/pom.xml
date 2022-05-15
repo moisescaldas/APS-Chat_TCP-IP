@@ -51,13 +51,10 @@
 							<goal>copy-resources</goal>
 						</goals>
 						<configuration>
-							<outputDirectory>${project.build.directory}/libs/contratos</outputDirectory>
+							<outputDirectory>${project.build.directory}/contratos</outputDirectory>
 							<resources>
 								<resource>
 									<directory>contratos</directory>
-									<includes>
-										<include>*.json</include>
-									</includes>
 								</resource>
 							</resources>
 						</configuration>

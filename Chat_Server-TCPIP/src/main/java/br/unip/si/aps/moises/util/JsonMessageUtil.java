@@ -96,7 +96,7 @@ public class JSONMessageUtil {
 	}
 	public static JSONObject getMessageNotifyClosedUser(String from) {
 		try {
-			File file = new File(PREFIX + "notify_closed_user.json");
+			File file = new File(PREFIX + "notify.json");
 			StringBuilder template = new StringBuilder(Files.readString(file.toPath()));
 			
 			Integer start = template.toString().indexOf("{from}");
