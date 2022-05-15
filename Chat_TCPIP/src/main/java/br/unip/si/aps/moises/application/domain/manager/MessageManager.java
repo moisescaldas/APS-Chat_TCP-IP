@@ -6,7 +6,7 @@ import javax.swing.text.Document;
 import br.unip.si.aps.moises.application.domain.bean.LocalUser;
 import br.unip.si.aps.moises.application.domain.bean.MessageData;
 import br.unip.si.aps.moises.application.domain.bean.RemoteUser;
-import br.unip.si.aps.moises.core.actions.MessageAction;
+import br.unip.si.aps.moises.core.bus.actions.MessageAction;
 import br.unip.si.aps.moises.core.dto.Message;
 import br.unip.si.aps.moises.util.CryptographicUtil;
 import br.unip.si.aps.moises.util.SecurityKeysUtil;
@@ -20,7 +20,7 @@ public class MessageManager {
 	private MessageManager() {
 		dm = DocumentManager.getInstance();
 		aidl = ApplicationIDList.getInstance();
-		rul = RemoteUserList.getInstance();
+		rul = RemoteUserManager.getInstance();
 	}
 
 	public static synchronized MessageManager getInstance() {
@@ -32,7 +32,7 @@ public class MessageManager {
 	 */
 	private DocumentManager dm;
 	private ApplicationIDList aidl;
-	private RemoteUserList rul;
+	private RemoteUserManager rul;
 
 	public void sendMessage(String message) {
 		RemoteUser user = dm.getSelectedUser();

@@ -20,6 +20,7 @@ public class ApplicationFileResolver {
 		try {
 			Files.createDirectories(Paths.get(ROOT));
 			Files.createDirectories(Paths.get(ROOT + "/keypair"));
+			Files.createDirectories(Paths.get(ROOT + "/.channels"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

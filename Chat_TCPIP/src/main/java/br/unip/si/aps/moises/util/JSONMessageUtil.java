@@ -24,7 +24,7 @@ public class JSONMessageUtil {
 		}		
 	}
 
-	public static JSONObject getMessageUnregistro(String from) {
+	public static JSONObject getMessageUnregister(String from) {
 		try {
 			File file = new File(PREFIX + "unregister.json");
 			StringBuilder template = new StringBuilder(new String(Files.readAllBytes(file.toPath())));
@@ -125,5 +125,18 @@ public class JSONMessageUtil {
 		} catch (Exception e) {
 			return null;
 		}
+	}
+	
+	public static JSONObject getMessageNotifyClosedUser(String from) {
+		try {
+			File file = new File(PREFIX + "notify.json");
+			StringBuilder template = new StringBuilder(new String(Files.readAllBytes(file.toPath())));
+			
+			Integer start = template.toString().indexOf("{from}");
+			template.replace(start, start + 6, from);
+			return new JSONObject(template.toString());	
+		} catch (Exception e) {
+			return null;
+		}	
 	}
 }

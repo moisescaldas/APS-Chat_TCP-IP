@@ -1,4 +1,4 @@
-package br.unip.si.aps.moises.core.actions;
+package br.unip.si.aps.moises.core.bus.actions;
 
 import br.unip.si.aps.moises.core.dto.Acknowledge;
 import br.unip.si.aps.moises.core.factory.MessageEventFactory;

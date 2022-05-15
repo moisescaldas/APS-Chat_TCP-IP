@@ -6,17 +6,12 @@ import java.awt.GridLayout;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-
-import br.unip.si.aps.moises.application.MainFrame;
-import br.unip.si.aps.moises.application.custom.label.channel.UserChannel;
-import br.unip.si.aps.moises.application.domain.bean.RemoteUser;
 import javax.swing.ScrollPaneConstants;
 
-public class GlobalChannel extends JPanel {
+import br.unip.si.aps.moises.application.custom.label.channel.UserChannel;
+import br.unip.si.aps.moises.application.domain.bean.RemoteUser;
 
-	/**
-	 * 
-	 */
+public class GlobalChannel extends JPanel {
 	private static final long serialVersionUID = 912049652074524506L;
 	private static GlobalChannel instance;
 	private JPanel panel;
@@ -35,9 +30,10 @@ public class GlobalChannel extends JPanel {
 		add(scroll);
 	}
 	
-	public void addUser(RemoteUser user) {
-		panel.add(new UserChannel(user));
-		MainFrame.getInstance().refreshCard();
+	public UserChannel addUser(RemoteUser user) {
+		UserChannel channel = new UserChannel(user);
+		panel.add(channel);
+		return channel;
 	}
 	
 	public void updateUsers() {

@@ -1,6 +1,7 @@
 package br.unip.si.aps.moises.core.bus;
 
 import java.lang.reflect.Method;
+import java.security.PublicKey;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -8,38 +9,53 @@ import java.util.logging.Logger;
 import com.github.openjson.JSONObject;
 
 import br.unip.si.aps.moises.application.domain.manager.ApplicationIDList;
+import br.unip.si.aps.moises.core.bus.actions.AnnounceAction;
 import br.unip.si.aps.moises.core.bus.services.AcknowledgeService;
 import br.unip.si.aps.moises.core.bus.services.AnnounceService;
+import br.unip.si.aps.moises.core.bus.services.ClosedService;
 import br.unip.si.aps.moises.core.bus.services.MessageService;
 import br.unip.si.aps.moises.core.bus.services.Service;
 import br.unip.si.aps.moises.core.dto.Acknowledge;
 import br.unip.si.aps.moises.core.dto.Announce;
+import br.unip.si.aps.moises.core.dto.Closed;
 import br.unip.si.aps.moises.core.dto.Message;
 import br.unip.si.aps.moises.observer.event.MessageEvent;
 import br.unip.si.aps.moises.observer.listener.MessageListener;
+import br.unip.si.aps.moises.util.SecurityKeysUtil;
 
 public class Coreographer implements MessageListener {
-	/**
+	/*
 	 * Pattern Singleton
 	 */
 	private static Coreographer instance;
 
 	private Coreographer() {
 		this.targetList = ApplicationIDList.getInstance();
+		this.announceAction = AnnounceAction.getInstance();
+		this.acknowledge = AcknowledgeService.getInstance();
+		this.announce = AnnounceService.getInstance();
+		this.message = MessageService.getInstance();
+		this.closed = ClosedService.getInstance();
 	}
 	
 	public static synchronized Coreographer getInstance() {
 		return instance == null ? (instance = new Coreographer()) : instance; 
 	}
-	/**
-	 * Objeto
+
+	/*
+	 * Atributos e Metodos
 	 */
+	private AnnounceAction announceAction;
 	private ApplicationIDList targetList;
+	private Service acknowledge;
+	private Service announce;
+	private Service message;
+	private Service closed;
 	
 	public void onMessage(MessageEvent event) {
 		Logger.getGlobal().info(event.getMessage().toString());
 		if (filterTarget(event.getMessage().getJSONObject("header")))
-			execService(event);
+				execService(event);
 	}
 
 	private void execService(MessageEvent event) {
@@ -65,27 +81,38 @@ public class Coreographer implements MessageListener {
 		}
 	}	
 
-	/**
+	/*
 	 * Serviços
 	 */
 	public void announce(MessageEvent event) {
-		Service service = new AnnounceService();
 		Map<String, Object> data = new HashMap<>();
 		data.put("announce", Announce.loadFromJson(event.getMessage()));
-		service.exec(data);
+		announce.exec(data);
 	}
 	
 	public void acknowledge(MessageEvent event) {
-		Service service = new AcknowledgeService();
 		Map<String, Object> data = new HashMap<>();
 		data.put("acknowledge", Acknowledge.loadFromJson(event.getMessage()));
-		service.exec(data);
+		acknowledge.exec(data);
 	}
 	
 	public void message(MessageEvent event) {
-		Service service = new MessageService();
 		Map<String, Object> data = new HashMap<>();
 		data.put("message", Message.loadFromJson(event.getMessage()));
-		service.exec(data);
+		message.exec(data);
 	}
+	
+	public void close(MessageEvent event) {
+		Map<String, Object> data = new HashMap<>();
+		data.put("closed", Closed.loadFromJson(event.getMessage()));
+		closed.exec(data);
+	}
+
+	/*
+	 * Ações
+	 */
+	public void announceActionTrigger(PublicKey publicKey, String name) {
+		announceAction.triggerAction(new Announce(SecurityKeysUtil.encodePublicKey(publicKey), name));	
+	}
+	
 }

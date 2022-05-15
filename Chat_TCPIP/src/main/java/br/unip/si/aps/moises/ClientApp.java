@@ -23,17 +23,12 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import br.unip.si.aps.moises.application.MainFrame;
 import br.unip.si.aps.moises.application.domain.bean.LocalUser;
-import br.unip.si.aps.moises.application.domain.manager.ApplicationIDList;
-import br.unip.si.aps.moises.application.domain.manager.RemoteUserList;
+import br.unip.si.aps.moises.application.domain.manager.RemoteUserManager;
 import br.unip.si.aps.moises.application.domain.manager.ThreadExecutionManager;
-import br.unip.si.aps.moises.core.actions.AnnounceAction;
 import br.unip.si.aps.moises.core.bus.Coreographer;
-import br.unip.si.aps.moises.core.dto.Announce;
-import br.unip.si.aps.moises.core.factory.MessageEventFactory;
 import br.unip.si.aps.moises.core.file.ApplicationConfig;
 import br.unip.si.aps.moises.core.file.resolver.ApplicationFileResolver;
 import br.unip.si.aps.moises.core.network.NetworkProxy;
-import br.unip.si.aps.moises.util.JSONMessageUtil;
 import br.unip.si.aps.moises.util.SecurityKeysUtil;
 
 public class ClientApp {
@@ -237,20 +232,13 @@ public class ClientApp {
 	}
 
 	private void loadApplication() {
-		LocalUser.newInstance(
-				config.getProperty("user.name"),
+		LocalUser.newInstance(config.getProperty("user.name"),
 				SecurityKeysUtil.decodePrivateKey(config.getProperty("user.rsa.privatekey")),
 				SecurityKeysUtil.decodePublicKey(config.getProperty("user.rsa.publickey")));
-
 		NetworkProxy.newInstance(config.getProperty("server.ip"), Integer.parseInt(config.getProperty("server.port")));
 		Coreographer.getInstance();
-		AnnounceAction.getInstance();
-		RemoteUserList.getInstance();
+		RemoteUserManager.getInstance();
 		executor.submit(NetworkProxy.getInstance());
-		NetworkProxy.getInstance().onMessage(MessageEventFactory.createMessageEvent(null, JSONMessageUtil.getMessageRegister(ApplicationIDList.getInstance().getIdList().get(1)).toString()));
-		AnnounceAction.getInstance().triggerAction(new Announce(
-				SecurityKeysUtil.encodePublicKey(LocalUser.getInstance().getPublicKey()),
-				LocalUser.getInstance().getName()));
 	}
 
 	private void loadConfiguration() {

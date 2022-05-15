@@ -1,4 +1,4 @@
-package br.unip.si.aps.moises.core.actions;
+package br.unip.si.aps.moises.core.bus.actions;
 
 import br.unip.si.aps.moises.core.dto.Announce;
 import br.unip.si.aps.moises.core.network.NetworkProxy;
@@ -6,8 +6,8 @@ import br.unip.si.aps.moises.observer.event.MessageEvent;
 
 public class AnnounceAction implements Action {
 	
-	/**
-	 * Pattern Singleton
+	/*
+	 * Singleton
 	 */
 	private static AnnounceAction instance;
 	
@@ -18,8 +18,8 @@ public class AnnounceAction implements Action {
 		return instance == null ? (instance = new AnnounceAction()) : instance;
 	}
 	
-	/**
-	 * Metodos e Atributos do Objeto instanciado
+	/*
+	 * Metodos e Atributos
 	 */
 	private NetworkProxy proxy;
 	
