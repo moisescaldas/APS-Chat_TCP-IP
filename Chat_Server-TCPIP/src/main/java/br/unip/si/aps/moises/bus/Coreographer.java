@@ -3,7 +3,11 @@ package br.unip.si.aps.moises.bus;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+import br.unip.si.aps.moises.bus.actions.Action;
+import br.unip.si.aps.moises.bus.actions.NotifyClosedUserAction;
 import br.unip.si.aps.moises.bus.services.RegisterService;
 import br.unip.si.aps.moises.bus.services.SendService;
 import br.unip.si.aps.moises.bus.services.Service;
@@ -21,7 +25,7 @@ public class Coreographer implements MessageListener {
 	private Coreographer() {
 		this.register = RegisterService.getInstance();
 		this.send = SendService.getInstance();
-		
+		this.notifyClosedUser = NotifyClosedUserAction.getInstance();
 	}
 	
 	public static synchronized Coreographer getInstance() {
@@ -32,6 +36,7 @@ public class Coreographer implements MessageListener {
 	 */
 	private Service register;
 	private Service send;
+	private Action notifyClosedUser;
 	
 	@Override
 	public void onMessage(MessageAction action) {
@@ -64,7 +69,6 @@ public class Coreographer implements MessageListener {
 	public void register(MessageAction action) {
 		var data = new HashMap<String, Object>();
 		var json = action.getMessage().getJSONObject("header");
-		
 		data.put("proxy", action.getSource());
 		data.put("target", json.getString("from"));
 		data.put("id", json.getString("id"));
@@ -86,5 +90,13 @@ public class Coreographer implements MessageListener {
 	/*
 	 * Ações
 	 */
-	
+	public void notifyClosedUser(List<String> idList) {
+		Map<String, Object> data = new HashMap<>();
+		
+		idList.forEach(id -> {
+			data.put("message", JSONMessageUtil.getMessageNotifyClosedUser(id));
+			notifyClosedUser.triggerAction(data);
+		});
+	}
+
 }

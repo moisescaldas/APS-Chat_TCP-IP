@@ -7,7 +7,6 @@ import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -20,7 +19,10 @@ public class ConnectionPoolManager {
 	 */
 	private static ConnectionPoolManager instance;
 	
-	private ConnectionPoolManager() {}
+	private ConnectionPoolManager() {
+		this.pool = new HashMap<NetworkProxy, Set<String>>();
+		this.executor = Executors.newSingleThreadExecutor();
+	}
 	
 	public static synchronized ConnectionPoolManager getInstance() {
 		return instance == null ? (instance = new ConnectionPoolManager()) : instance;
@@ -29,15 +31,15 @@ public class ConnectionPoolManager {
 	/*
 	 * Atributos e Metodos
 	 */
-	private Map<NetworkProxy, Set<String>> pool = new HashMap<NetworkProxy, Set<String>>();
-	private ExecutorService executor = Executors.newFixedThreadPool(1);
+	private Map<NetworkProxy, Set<String>> pool;
+	private ExecutorService executor;
 
 	public void putNetworkProxy(@NonNull NetworkProxy proxy, @NonNull Set<String> destinations) {
 		executor.submit(() -> pool.put(proxy, destinations));
 	}
 	
 	public Map<NetworkProxy, Set<String>> getConnectionPool(){
-		Future<Map<NetworkProxy, Set<String>>> future = executor.submit(() -> {return pool;});
+		var future = executor.submit(() -> {return pool;});
 		try {
 			return future.get();
 		} catch (InterruptedException | ExecutionException e) {
@@ -69,14 +71,23 @@ public class ConnectionPoolManager {
 	}
 
 	public List<NetworkProxy> findNetworkProxyTarget(@NonNull String target) {
-		Future<List<NetworkProxy>> proxyList = executor.submit(() -> {
+		var proxyList = executor.submit(() -> {
 			return pool.keySet().stream().filter(proxy -> {
 				return pool.get(proxy).stream().anyMatch(destiny -> destiny.equals(target)) ? true : false ;
 			}).collect(Collectors.toList());
-		});
-		
+		});		
 		try {
 			return proxyList.get();
+		} catch (InterruptedException | ExecutionException e) {
+			Logger.getGlobal().warning(e.getMessage());
+			return null;
+		}
+	}
+	
+	public List<String> getIDsFromNetworkProxy(NetworkProxy proxy){
+		var future = executor.submit(() -> {return pool.get(proxy).stream().collect(Collectors.toList());});
+		try {
+			return future.get();
 		} catch (InterruptedException | ExecutionException e) {
 			Logger.getGlobal().warning(e.getMessage());
 			return null;

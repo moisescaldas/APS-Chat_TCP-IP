@@ -4,8 +4,10 @@ import static br.unip.si.aps.moises.factory.SocketFactory.createServerSocket;
 
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.util.List;
 import java.util.logging.Logger;
 
+import br.unip.si.aps.moises.bus.Coreographer;
 import br.unip.si.aps.moises.factory.ProxyThreadFactory;
 import br.unip.si.aps.moises.network.domain.NetworkProxy;
 import br.unip.si.aps.moises.observer.listener.CloseConnectionListener;
@@ -13,11 +15,13 @@ import br.unip.si.aps.moises.observer.listener.CloseConnectionListener;
 public class NetworkProxyManager implements Runnable, CloseConnectionListener {
 	private ServerSocket socket;
 	private ConnectionPoolManager poolManager;
+	private Coreographer bus;
 	
 	public NetworkProxyManager() {
 		if((socket = createServerSocket(7777)) == null)
 			throw new RuntimeException();
 		this.poolManager = ConnectionPoolManager.getInstance();
+		this.bus = Coreographer.getInstance();
 	}
 		
 	@Override
@@ -41,7 +45,9 @@ public class NetworkProxyManager implements Runnable, CloseConnectionListener {
 
 	@Override
 	public void notifyConnectionClosed(NetworkProxy proxy) {
+		List<String> idList = poolManager.getIDsFromNetworkProxy(proxy);
 		poolManager.removeNetworkProxy(proxy);
+		bus.notifyClosedUser(idList);
 		Logger.getGlobal().info("Conexão[" + proxy + "]Fechada");
 	}
 	

@@ -72,6 +72,7 @@ public class JSONMessageUtil {
 		}	
 	}
 	
+	@Deprecated
 	public static JSONObject getMessageSend(String target, String from, String id, String message) {
 		try {
 			File file = new File(PREFIX + "send.json");
@@ -88,13 +89,21 @@ public class JSONMessageUtil {
 
 			start = template.toString().indexOf("{message}");
 			template.replace(start, start + 9, message);
-			
-			return new JSONObject(template.toString());
-			
-			
+			return new JSONObject(template.toString());	
 		} catch (Exception e) {
 			return null;
-		}
-		
+		}		
+	}
+	public static JSONObject getMessageNotifyClosedUser(String from) {
+		try {
+			File file = new File(PREFIX + "notify_closed_user.json");
+			StringBuilder template = new StringBuilder(Files.readString(file.toPath()));
+			
+			Integer start = template.toString().indexOf("{from}");
+			template.replace(start, start + 6, from);
+			return new JSONObject(template.toString());	
+		} catch (Exception e) {
+			return null;
+		}	
 	}
 }

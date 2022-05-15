@@ -27,8 +27,8 @@ public class TesteJsonMessages {
 	}
 
 	@Test
-	public void testeSend() {
-		System.out.println(JSONMessageUtil.getMessageSend("Destino", "Origem", "ID", "Porque isso funcionou").toString());
+	public void testeNotifyClosedUser() {
+		System.out.println(JSONMessageUtil.getMessageNotifyClosedUser("Origem").toString());
 	}	
 	
 }
