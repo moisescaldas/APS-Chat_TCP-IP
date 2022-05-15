@@ -5,8 +5,8 @@ import java.nio.file.Files;
 
 import com.github.openjson.JSONObject;
 
-public class JsonMessageUtil {	
-	private JsonMessageUtil() {}
+public class JSONMessageUtil {	
+	private JSONMessageUtil() {}
 	
 	private final static String PREFIX = "contratos/";
 		

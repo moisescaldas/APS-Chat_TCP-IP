@@ -2,7 +2,7 @@
 	"header":{
 		"target":0,
 		"from":0,
-		"id":0,
+		"id":"{id}",
 		"method":"error"
 	},
 	"body":{

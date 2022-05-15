@@ -7,11 +7,28 @@ import br.unip.si.aps.moises.network.manager.ConnectionPoolManager;
 import lombok.Setter;
 
 @Setter
-public class Register implements Service {
+public class RegisterService implements Service {
+	/*
+	 * Sigleton
+	 */
+	private static RegisterService instance;
+	
+	private RegisterService() {
+		this.pool = ConnectionPoolManager.getInstance();
+	}
+	
+	public static synchronized RegisterService getInstance() {
+		return instance == null ? (instance = new RegisterService()) : instance;
+	}
+	
+	/*
+	 * Atributos e Metodos
+	 */
+	
+	private ConnectionPoolManager pool;
 	
 	@Override
 	public void exec(Map<String, Object> data) {
-		var pool = (ConnectionPoolManager) data.get("pool");
 		var proxy = (NetworkProxy) data.get("proxy");
 		var target = (String) data.get("target");
 		pool.addTargetToNetworkProxy(proxy, target);

@@ -4,27 +4,34 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 
-import br.unip.si.aps.moises.bus.services.Register;
-import br.unip.si.aps.moises.bus.services.Send;
-import br.unip.si.aps.moises.bus.services.Unregister;
+import br.unip.si.aps.moises.bus.services.RegisterService;
+import br.unip.si.aps.moises.bus.services.SendService;
+import br.unip.si.aps.moises.bus.services.Service;
 import br.unip.si.aps.moises.network.domain.NetworkProxy;
-import br.unip.si.aps.moises.network.manager.ConnectionPoolManager;
 import br.unip.si.aps.moises.observer.action.MessageAction;
 import br.unip.si.aps.moises.observer.listener.MessageListener;
-import br.unip.si.aps.moises.util.JsonMessageUtil;
+import br.unip.si.aps.moises.util.JSONMessageUtil;
 
 public class Coreographer implements MessageListener {
+	/*
+	 * Singleton
+	 */
 	private static Coreographer instance;
-	
-	private ConnectionPoolManager pool;
-	
-	public Coreographer() {
-		this.pool = ConnectionPoolManager.getInstance();
+		
+	private Coreographer() {
+		this.register = RegisterService.getInstance();
+		this.send = SendService.getInstance();
+		
 	}
 	
 	public static synchronized Coreographer getInstance() {
 		return instance == null ? (instance = new Coreographer()) : instance;
 	}
+	/*
+	 * Atributos e Metodos
+	 */
+	private Service register;
+	private Service send;
 	
 	@Override
 	public void onMessage(MessageAction action) {
@@ -37,10 +44,10 @@ public class Coreographer implements MessageListener {
 			try {
 				method.invoke(this, action);
 			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-				((NetworkProxy) action.getSource()).onMessage(new MessageAction(null, JsonMessageUtil.getMessageErro("Mensagem Invalida!")));				
+				((NetworkProxy) action.getSource()).onMessage(new MessageAction(null, JSONMessageUtil.getMessageErro("Mensagem Invalida!")));				
 			}
 		}else
-			((NetworkProxy) action.getSource()).onMessage(new MessageAction(null, JsonMessageUtil.getMessageErro("Metodo não reconhecido")));
+			((NetworkProxy) action.getSource()).onMessage(new MessageAction(null, JSONMessageUtil.getMessageErro("Metodo não reconhecido")));
 	}
 
 	private Method getMethod(String methodName) {
@@ -51,43 +58,33 @@ public class Coreographer implements MessageListener {
 		}
 	}	
 
-	// Serviços
+	/*
+	 * Serviços 
+	 */
 	public void register(MessageAction action) {
-		var service = new Register();
 		var data = new HashMap<String, Object>();
 		var json = action.getMessage().getJSONObject("header");
 		
 		data.put("proxy", action.getSource());
-		data.put("pool", pool);
 		data.put("target", json.getString("from"));
 		data.put("id", json.getString("id"));
 		
-		service.exec(data);
+		register.exec(data);
 	}
-
-	public void unregister(MessageAction action) {
-		var service = new Unregister();
-		var data = new HashMap<String, Object>();
-		var json = action.getMessage().getJSONObject("header");
-		
-		data.put("proxy", action.getSource());
-		data.put("pool", pool);
-		data.put("target", json.getString("from"));
-		data.put("id", json.getString("id"));
-		
-		service.exec(data);
-	}	
 	
 	public void send(MessageAction action) {
-		var service = new Send();
 		var data = new HashMap<String, Object>();
 		var json = action.getMessage().getJSONObject("header");
 
 		data.put("proxy", action.getSource());
-		data.put("pool", pool);
 		data.put("target", json.getString("target"));
 		data.put("message", action.getMessage());
 		
-		service.exec(data);
-	}	
+		send.exec(data);
+	}
+	
+	/*
+	 * Ações
+	 */
+	
 }

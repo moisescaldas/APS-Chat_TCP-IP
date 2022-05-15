@@ -15,6 +15,9 @@ import br.unip.si.aps.moises.network.domain.NetworkProxy;
 import lombok.NonNull;
 
 public class ConnectionPoolManager {
+	/*
+	 * Singleton
+	 */
 	private static ConnectionPoolManager instance;
 	
 	private ConnectionPoolManager() {}
@@ -23,6 +26,9 @@ public class ConnectionPoolManager {
 		return instance == null ? (instance = new ConnectionPoolManager()) : instance;
 	}
 	
+	/*
+	 * Atributos e Metodos
+	 */
 	private Map<NetworkProxy, Set<String>> pool = new HashMap<NetworkProxy, Set<String>>();
 	private ExecutorService executor = Executors.newFixedThreadPool(1);
 

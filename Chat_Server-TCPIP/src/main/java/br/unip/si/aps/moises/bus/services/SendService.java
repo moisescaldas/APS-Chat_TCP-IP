@@ -8,13 +8,28 @@ import com.github.openjson.JSONObject;
 import br.unip.si.aps.moises.network.domain.NetworkProxy;
 import br.unip.si.aps.moises.network.manager.ConnectionPoolManager;
 import br.unip.si.aps.moises.observer.action.MessageAction;
-import br.unip.si.aps.moises.util.JsonMessageUtil;
+import br.unip.si.aps.moises.util.JSONMessageUtil;
 
-public class Send implements Service {
+public class SendService implements Service {
+	/*
+	 * Singleton
+	 */
+	private static SendService instance;
+	
+	private SendService() {
+		this.pool = ConnectionPoolManager.getInstance();
+	}
+	
+	public static synchronized SendService getInstance() {
+		return instance == null ? (instance = new SendService()) : instance;
+	}
+	/*
+	 * Atributos e Metodos
+	 */
+	private ConnectionPoolManager pool;
 	
 	@Override
 	public void exec(Map<String, Object> data) {
-		var pool = (ConnectionPoolManager) data.get("pool");
 		var originProxy = (NetworkProxy) data.get("proxy");
 
 		var target = (String) data.get("target");
@@ -33,7 +48,7 @@ public class Send implements Service {
 			
 		}catch(Exception e) {
 			Logger.getGlobal().info(e.getMessage());
-			originProxy.onMessage(new MessageAction(null, JsonMessageUtil.getMessageErro(e.getMessage())));
+			originProxy.onMessage(new MessageAction(null, JSONMessageUtil.getMessageErro(e.getMessage())));
 		}
 	}
 }
