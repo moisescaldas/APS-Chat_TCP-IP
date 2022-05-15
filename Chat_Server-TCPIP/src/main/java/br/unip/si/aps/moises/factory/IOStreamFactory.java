@@ -1,14 +1,16 @@
 package br.unip.si.aps.moises.factory;
 
-import java.io.IOException;
-import java.io.PrintStream;
 import java.net.Socket;
 import java.util.Scanner;
+
+import lombok.NonNull;
+
+import java.io.*;
 
 public class IOStreamFactory {
 	private IOStreamFactory() {}
 	
-	public static Scanner socketScanner(Socket socket) {
+	public static Scanner socketScanner(@NonNull Socket socket) {
 		try {
 			return new Scanner(socket.getInputStream());
 		} catch (IOException e) {
@@ -16,7 +18,7 @@ public class IOStreamFactory {
 		}
 	}
 	
-	public static PrintStream socketPrintStream(Socket socket) {
+	public static PrintStream socketPrintStream(@NonNull Socket socket) {
 		try {
 			return new PrintStream(socket.getOutputStream());
 		} catch (IOException e) {

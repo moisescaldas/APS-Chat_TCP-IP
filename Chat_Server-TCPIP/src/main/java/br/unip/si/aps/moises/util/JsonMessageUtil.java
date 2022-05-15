@@ -5,12 +5,14 @@ import java.nio.file.Files;
 
 import com.github.openjson.JSONObject;
 
+import lombok.NonNull;
+
 public class JSONMessageUtil {	
 	private JSONMessageUtil() {}
 	
 	private final static String PREFIX = "contratos/";
 		
-	public static JSONObject getMessageErro(String message) {		
+	public static JSONObject getMessageErro(@NonNull String message) {		
 		try {
 			File file = new File(PREFIX + "error.json");
 			StringBuilder template = new StringBuilder(Files.readString(file.toPath()));
@@ -25,7 +27,7 @@ public class JSONMessageUtil {
 		}
 	}
 
-	public static JSONObject getMessageInfo(String id, String message) {
+	public static JSONObject getMessageInfo(@NonNull String id,@NonNull String message) {
 		int start;
 		
 		try {
@@ -44,7 +46,7 @@ public class JSONMessageUtil {
 		}		
 	}
 
-	public static JSONObject getMessageRegistro(String from) {
+	public static JSONObject getMessageRegistro(@NonNull String from) {
 		try {
 			File file = new File(PREFIX + "register.json");
 			StringBuilder template = new StringBuilder(Files.readString(file.toPath()));
@@ -58,7 +60,7 @@ public class JSONMessageUtil {
 		}		
 	}
 
-	public static JSONObject getMessageUnregistro(String from) {
+	public static JSONObject getMessageUnregistro(@NonNull String from) {
 		try {
 			File file = new File(PREFIX + "unregister.json");
 			StringBuilder template = new StringBuilder(Files.readString(file.toPath()));
@@ -94,7 +96,7 @@ public class JSONMessageUtil {
 			return null;
 		}		
 	}
-	public static JSONObject getMessageNotifyClosedUser(String from) {
+	public static JSONObject getMessageNotifyClosedUser(@NonNull String from) {
 		try {
 			File file = new File(PREFIX + "notify.json");
 			StringBuilder template = new StringBuilder(Files.readString(file.toPath()));

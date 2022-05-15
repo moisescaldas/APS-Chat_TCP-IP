@@ -1,7 +1,6 @@
 package br.unip.si.aps.moises.network.domain;
 
-import static br.unip.si.aps.moises.factory.IOStreamFactory.socketPrintStream;
-import static br.unip.si.aps.moises.factory.IOStreamFactory.socketScanner;
+import static br.unip.si.aps.moises.factory.IOStreamFactory.*;
 
 import java.io.PrintStream;
 import java.net.Socket;
@@ -63,11 +62,11 @@ public class NetworkProxy implements Runnable, MessageListener{
 	}
 
 	@Override
-	public void onMessage(MessageAction action) {
+	public void onMessage(@NonNull MessageAction action) {
 		output.println(action.getMessage());
 	}
 
-	public NetworkProxy setServiceBus(MessageListener serviceBus) {
+	public NetworkProxy setServiceBus(@NonNull MessageListener serviceBus) {
 		this.serviceBus = serviceBus;
 		return this;
 	}

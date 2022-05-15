@@ -1,12 +1,7 @@
 package br.unip.si.aps.moises.network.manager;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.*;
+import java.util.concurrent.*;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -84,7 +79,7 @@ public class ConnectionPoolManager {
 		}
 	}
 	
-	public List<String> getIDsFromNetworkProxy(NetworkProxy proxy){
+	public List<String> getIDsFromNetworkProxy(@NonNull NetworkProxy proxy){
 		var future = executor.submit(() -> {return pool.get(proxy).stream().collect(Collectors.toList());});
 		try {
 			return future.get();

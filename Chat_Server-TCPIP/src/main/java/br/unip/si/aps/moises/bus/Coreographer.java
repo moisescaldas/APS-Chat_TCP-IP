@@ -1,20 +1,15 @@
 package br.unip.si.aps.moises.bus;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.lang.reflect.*;
+import java.util.*;
 
-import br.unip.si.aps.moises.bus.actions.Action;
-import br.unip.si.aps.moises.bus.actions.NotifyClosedUserAction;
-import br.unip.si.aps.moises.bus.services.RegisterService;
-import br.unip.si.aps.moises.bus.services.SendService;
-import br.unip.si.aps.moises.bus.services.Service;
+import br.unip.si.aps.moises.bus.actions.*;
+import br.unip.si.aps.moises.bus.services.*;
 import br.unip.si.aps.moises.network.domain.NetworkProxy;
 import br.unip.si.aps.moises.observer.action.MessageAction;
 import br.unip.si.aps.moises.observer.listener.MessageListener;
 import br.unip.si.aps.moises.util.JSONMessageUtil;
+import lombok.NonNull;
 
 public class Coreographer implements MessageListener {
 	/*
@@ -39,11 +34,11 @@ public class Coreographer implements MessageListener {
 	private Action notifyClosedUser;
 	
 	@Override
-	public void onMessage(MessageAction action) {
+	public void onMessage(@NonNull MessageAction action) {
 		this.execService(action);
 	}
 	
-	public void execService(MessageAction action) {
+	public void execService(@NonNull MessageAction action) {
 		Method method = getMethod(action.getMessage().getJSONObject("header").getString("method"));
 		if(method != null) {
 			try {
@@ -55,7 +50,7 @@ public class Coreographer implements MessageListener {
 			((NetworkProxy) action.getSource()).onMessage(new MessageAction(null, JSONMessageUtil.getMessageErro("Metodo não reconhecido")));
 	}
 
-	private Method getMethod(String methodName) {
+	private Method getMethod(@NonNull String methodName) {
 		try {
 			return Coreographer.class.getMethod(methodName, MessageAction.class);
 		} catch (Exception e) {
@@ -66,7 +61,7 @@ public class Coreographer implements MessageListener {
 	/*
 	 * Serviços 
 	 */
-	public void register(MessageAction action) {
+	public void register(@NonNull MessageAction action) {
 		var data = new HashMap<String, Object>();
 		var json = action.getMessage().getJSONObject("header");
 		data.put("proxy", action.getSource());
@@ -76,7 +71,7 @@ public class Coreographer implements MessageListener {
 		register.exec(data);
 	}
 	
-	public void send(MessageAction action) {
+	public void send(@NonNull MessageAction action) {
 		var data = new HashMap<String, Object>();
 		var json = action.getMessage().getJSONObject("header");
 
@@ -90,7 +85,7 @@ public class Coreographer implements MessageListener {
 	/*
 	 * Ações
 	 */
-	public void notifyClosedUser(List<String> idList) {
+	public void notifyClosedUser(@NonNull List<String> idList) {
 		Map<String, Object> data = new HashMap<>();
 		
 		idList.forEach(id -> {

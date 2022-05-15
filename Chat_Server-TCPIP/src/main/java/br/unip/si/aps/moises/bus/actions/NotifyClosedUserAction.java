@@ -7,6 +7,7 @@ import com.github.openjson.JSONObject;
 
 import br.unip.si.aps.moises.network.manager.ConnectionPoolManager;
 import br.unip.si.aps.moises.observer.action.MessageAction;
+import lombok.NonNull;
 
 public class NotifyClosedUserAction implements Action {
 	/*
@@ -28,7 +29,7 @@ public class NotifyClosedUserAction implements Action {
 	private ConnectionPoolManager pool;
 	
 	@Override
-	public void triggerAction(Map<String, Object> data) {
+	public void triggerAction(@NonNull Map<String, Object> data) {
 		var message = (JSONObject) data.get("message");
 
 		try {

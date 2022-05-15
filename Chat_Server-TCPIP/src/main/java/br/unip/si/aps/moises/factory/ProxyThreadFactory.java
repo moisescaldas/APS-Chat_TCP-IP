@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 import br.unip.si.aps.moises.network.domain.NetworkProxy;
 import br.unip.si.aps.moises.network.manager.ConnectionPoolManager;
 import br.unip.si.aps.moises.observer.listener.CloseConnectionListener;
+import lombok.NonNull;
 
 public class ProxyThreadFactory implements ThreadFactory{
 	private static ConnectionPoolManager pool = ConnectionPoolManager.getInstance();
@@ -20,7 +21,7 @@ public class ProxyThreadFactory implements ThreadFactory{
 		return new Thread(r);
 	}
 
-	public static Thread newThread(ServerSocket socket, CloseConnectionListener master) {
+	public static Thread newThread(@NonNull ServerSocket socket, CloseConnectionListener master) {
 		try {
 			NetworkProxy proxy = new NetworkProxy(socket.accept(), master);
 			pool.putNetworkProxy(proxy, new HashSet<String>());

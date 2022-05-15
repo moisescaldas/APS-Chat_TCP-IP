@@ -4,6 +4,7 @@ import java.util.Map;
 
 import br.unip.si.aps.moises.network.domain.NetworkProxy;
 import br.unip.si.aps.moises.network.manager.ConnectionPoolManager;
+import lombok.NonNull;
 import lombok.Setter;
 
 @Setter
@@ -28,7 +29,7 @@ public class RegisterService implements Service {
 	private ConnectionPoolManager pool;
 	
 	@Override
-	public void exec(Map<String, Object> data) {
+	public void exec(@NonNull Map<String, Object> data) {
 		var proxy = (NetworkProxy) data.get("proxy");
 		var target = (String) data.get("target");
 		pool.addTargetToNetworkProxy(proxy, target);

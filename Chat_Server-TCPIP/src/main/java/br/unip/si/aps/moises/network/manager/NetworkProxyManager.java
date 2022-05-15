@@ -11,6 +11,7 @@ import br.unip.si.aps.moises.bus.Coreographer;
 import br.unip.si.aps.moises.factory.ProxyThreadFactory;
 import br.unip.si.aps.moises.network.domain.NetworkProxy;
 import br.unip.si.aps.moises.observer.listener.CloseConnectionListener;
+import lombok.NonNull;
 
 public class NetworkProxyManager implements Runnable, CloseConnectionListener {
 	private ServerSocket socket;
@@ -44,7 +45,7 @@ public class NetworkProxyManager implements Runnable, CloseConnectionListener {
 	}
 
 	@Override
-	public void notifyConnectionClosed(NetworkProxy proxy) {
+	public void notifyConnectionClosed(@NonNull NetworkProxy proxy) {
 		List<String> idList = poolManager.getIDsFromNetworkProxy(proxy);
 		poolManager.removeNetworkProxy(proxy);
 		bus.notifyClosedUser(idList);

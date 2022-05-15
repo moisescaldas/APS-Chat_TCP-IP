@@ -9,6 +9,7 @@ import br.unip.si.aps.moises.network.domain.NetworkProxy;
 import br.unip.si.aps.moises.network.manager.ConnectionPoolManager;
 import br.unip.si.aps.moises.observer.action.MessageAction;
 import br.unip.si.aps.moises.util.JSONMessageUtil;
+import lombok.NonNull;
 
 public class SendService implements Service {
 	/*
@@ -29,7 +30,7 @@ public class SendService implements Service {
 	private ConnectionPoolManager pool;
 	
 	@Override
-	public void exec(Map<String, Object> data) {
+	public void exec(@NonNull Map<String, Object> data) {
 		var originProxy = (NetworkProxy) data.get("proxy");
 
 		var target = (String) data.get("target");
