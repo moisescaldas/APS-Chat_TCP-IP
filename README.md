@@ -12,7 +12,7 @@
 ```
 $ mvn clean package
 $ docker build -t aps/chat_server .
-$ docker run -p 7777:7777 -t aps/chat_server
+$ docker run -d --name APS_CHAT -p 7777:7777 -t aps/chat_server
 ```
 
 ### Compilando e Executando o Cliente
