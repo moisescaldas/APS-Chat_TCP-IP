@@ -27,7 +27,7 @@ import br.unip.si.aps.moises.application.domain.manager.RemoteUserManager;
 import br.unip.si.aps.moises.application.domain.manager.ThreadExecutionManager;
 import br.unip.si.aps.moises.core.bus.Coreographer;
 import br.unip.si.aps.moises.core.file.ApplicationConfig;
-import br.unip.si.aps.moises.core.file.resolver.ApplicationFileResolver;
+import br.unip.si.aps.moises.core.file.ApplicationFileResolver;
 import br.unip.si.aps.moises.core.network.NetworkProxy;
 import br.unip.si.aps.moises.util.SecurityKeysUtil;
 

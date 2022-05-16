@@ -1,4 +1,4 @@
-package br.unip.si.aps.moises.application.custom.label.channel;
+package br.unip.si.aps.moises.application.custom.label;
 
 import java.awt.Dimension;
 import java.awt.event.MouseEvent;

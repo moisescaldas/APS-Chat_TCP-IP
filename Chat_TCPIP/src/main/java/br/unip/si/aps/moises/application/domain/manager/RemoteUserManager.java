@@ -10,8 +10,8 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import br.unip.si.aps.moises.application.MainFrame;
-import br.unip.si.aps.moises.application.custom.label.channel.UserChannel;
-import br.unip.si.aps.moises.application.custom.panel.channels.GlobalChannel;
+import br.unip.si.aps.moises.application.custom.label.UserChannel;
+import br.unip.si.aps.moises.application.custom.panel.GlobalChannel;
 import br.unip.si.aps.moises.application.domain.bean.RemoteUser;
 import br.unip.si.aps.moises.application.domain.bean.Status;
 import br.unip.si.aps.moises.observer.listener.UserListener;

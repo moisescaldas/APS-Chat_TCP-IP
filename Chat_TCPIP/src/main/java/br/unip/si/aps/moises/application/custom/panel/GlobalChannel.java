@@ -1,4 +1,4 @@
-package br.unip.si.aps.moises.application.custom.panel.channels;
+package br.unip.si.aps.moises.application.custom.panel;
 
 import java.awt.Color;
 import java.awt.GridLayout;
@@ -8,7 +8,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 
-import br.unip.si.aps.moises.application.custom.label.channel.UserChannel;
+import br.unip.si.aps.moises.application.custom.label.UserChannel;
 import br.unip.si.aps.moises.application.domain.bean.RemoteUser;
 
 public class GlobalChannel extends JPanel {

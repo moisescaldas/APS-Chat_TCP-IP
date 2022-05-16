@@ -1,4 +1,4 @@
-package br.unip.si.aps.moises.application.custom.panel.channels;
+package br.unip.si.aps.moises.application.custom.panel;
 
 import javax.swing.JPanel;
 

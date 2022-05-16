@@ -22,7 +22,7 @@ import javax.swing.JTextArea;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.ScrollPaneConstants;
 
-import br.unip.si.aps.moises.application.custom.panel.channels.GlobalChannel;
+import br.unip.si.aps.moises.application.custom.panel.GlobalChannel;
 import br.unip.si.aps.moises.application.domain.bean.LocalUser;
 import br.unip.si.aps.moises.application.domain.manager.MessageManager;
 import br.unip.si.aps.moises.application.domain.manager.RemoteUserManager;
