@@ -88,5 +88,5 @@ public class RemoteUserManager {
 		} catch (Exception e) {
 			return null;
 		}
-	}
+	}	
 }

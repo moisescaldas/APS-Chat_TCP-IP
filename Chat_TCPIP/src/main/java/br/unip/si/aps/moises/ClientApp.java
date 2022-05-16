@@ -193,7 +193,7 @@ public class ClientApp {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			new Thread(() -> {
-				KeyPair pair = SecurityKeysUtil.newKeyPair(4096);
+				KeyPair pair = SecurityKeysUtil.newKeyPair(2048);
 				if (pair == null)
 					throw new RuntimeException("Não foi possivel gerar as chaves");
 				else {

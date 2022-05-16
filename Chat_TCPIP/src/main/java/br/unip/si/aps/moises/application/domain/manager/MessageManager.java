@@ -18,9 +18,11 @@ public class MessageManager {
 	private static MessageManager instance;
 
 	private MessageManager() {
-		dm = DocumentManager.getInstance();
-		aidl = ApplicationIDList.getInstance();
-		rul = RemoteUserManager.getInstance();
+		this.documentManager = DocumentManager.getInstance();
+		this.aidl = ApplicationIDList.getInstance();
+		this.rul = RemoteUserManager.getInstance();
+		this.localUser = LocalUser.getInstance();
+		this.messageAction = MessageAction.getInstance();
 	}
 
 	public static synchronized MessageManager getInstance() {
@@ -30,47 +32,43 @@ public class MessageManager {
 	/**
 	 * Atributos e Objetos da classe
 	 */
-	private DocumentManager dm;
+	private DocumentManager documentManager;
 	private ApplicationIDList aidl;
 	private RemoteUserManager rul;
+	private LocalUser localUser;
+	private MessageAction messageAction;
 
 	public void sendMessage(String message) {
-		RemoteUser user = dm.getSelectedUser();
+		RemoteUser user = documentManager.getSelectedUser();
 		MessageData md = new MessageData("Você", message);
 		Document document;
-		if ((document = dm.getDocument(user)) == null)
+		if ((document = documentManager.getDocument(user)) == null)
 			return;
 		append(md, document);
-		md.setAuthor(LocalUser.getInstance().getName());
-		md.setMessage(CryptographicUtil.encrypt(
-				SecurityKeysUtil.decodePublicKey(user.getId()),
-				message));
+		md.setAuthor(localUser.getName());
+		md.setMessage(CryptographicUtil.encrypt(SecurityKeysUtil.decodePublicKey(user.getId()),message));
 
-		MessageAction.getInstance().triggerAction(new Message(
-				user.getId(),
-				aidl.getIdList().get(1),
-				md.getAuthor(),
-				md.getMessage(),
-				md.getDate().toString()));
+		messageAction.triggerAction(new Message(
+				user.getId(), aidl.getIdList().get(1), 
+				md.getAuthor(), md.getMessage(), md.getDate().toString()));
 	}
 
 	private void append(MessageData md, Document document) {
 		try {
 			document.insertString(document.getLength(), md.getFormatedMessage() + "\n", null);
 		} catch (BadLocationException e) {
-		}		
+		}
 	}
 
 	public void receiveMessage(Message message) {
 		RemoteUser user;
-		LocalUser localUser = LocalUser.getInstance();
 		Document document;
 
 		if ((user = rul.getUser(message.getName(), message.getFrom())) == null)
 			return;
-
-		if ((document = dm.getDocument(user)) == null)
+		if ((document = documentManager.getDocument(user)) == null)
 			return;
+		
 		append(new MessageData(user.getName(),
 				CryptographicUtil.decrypt(localUser.getPrivateKey(), message.getMessage())),
 				document);

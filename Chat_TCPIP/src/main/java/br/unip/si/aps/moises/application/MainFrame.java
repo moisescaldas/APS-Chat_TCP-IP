@@ -7,6 +7,8 @@ import java.awt.EventQueue;
 import java.awt.SystemColor;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.swing.BorderFactory;
@@ -75,10 +77,12 @@ public class MainFrame extends JFrame {
 		mm = MessageManager.getInstance();
 		rul = RemoteUserManager.getInstance();
 		
+		setTitle("Chat TCP/IP");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setResizable(false);
 		this.setMinimumSize(new Dimension(950, 500));
 
+		
 		contentPane = new JPanel();
 		contentPane.setBackground(SystemColor.control);
 		contentPane.setBorder(null);
@@ -112,37 +116,7 @@ public class MainFrame extends JFrame {
 		inputArea.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 		inputArea.setLineWrap(true);
 		inputArea.setBackground(SystemColor.controlHighlight);
-		inputArea.addKeyListener(new KeyListener() {
-			private AtomicBoolean isShiftUp = new AtomicBoolean();
-
-			@Override
-			public void keyTyped(KeyEvent e) {
-			}
-			@Override
-			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() == 16) {
-					isShiftUp.set(false);
-					
-				} else if(isShiftUp.get() && e.getKeyCode() == 10) {
-					new Thread(() -> {
-						try {
-							Thread.sleep(10);
-						} catch (InterruptedException e1) {
-							e1.printStackTrace();
-						}
-						sendButton.getActionListeners()[0].actionPerformed(null);
-					}).start();					
-				} else if (e.getKeyCode() == 10) {
-					inputArea.append("\n");
-				}
-			}
-			@Override
-			public void keyReleased(KeyEvent e) {
-				if (e.getKeyCode() == 16) {
-					isShiftUp.set(true);
-				}
-			}
-		});
+		inputArea.addKeyListener(new PressEnterListener());
 
 		sendButton = new JButton("Enviar");
 		sendButton.addActionListener(event -> {
@@ -189,7 +163,7 @@ public class MainFrame extends JFrame {
 
 		JPanel clean = new JPanel();
 		channelsPanel.add(clean, "clean");
-		contentPane.setLayout(gl_contentPane);		
+		contentPane.setLayout(gl_contentPane);
 	}
 
 	public static synchronized MainFrame getInstance() {
@@ -199,5 +173,41 @@ public class MainFrame extends JFrame {
 	public void refreshCard() {
 		cardLayout.previous(channelsPanel);
 		cardLayout.next(channelsPanel);
+	}
+	
+	/*
+	 * Listeners
+	 */
+	private class PressEnterListener implements KeyListener {
+		private AtomicBoolean isShiftUp = new AtomicBoolean(true);
+		private ExecutorService executor = Executors.newSingleThreadExecutor();
+		
+		@Override
+		public void keyTyped(KeyEvent e) {
+		}
+		@Override
+		public void keyPressed(KeyEvent e) {
+			if (e.getKeyCode() == 16) {
+				isShiftUp.set(false);
+				
+			} else if(isShiftUp.get() && e.getKeyCode() == 10) {
+				executor.submit(() -> {
+					try {
+						Thread.sleep(100);
+					} catch (InterruptedException e1) {
+						e1.printStackTrace();
+						}
+					sendButton.getActionListeners()[0].actionPerformed(null);
+				});					
+			} else if (e.getKeyCode() == 10) {
+				inputArea.append("\n");
+			}
+		}
+		@Override
+		public void keyReleased(KeyEvent e) {
+			if (e.getKeyCode() == 16) {
+				isShiftUp.set(true);
+			}
+		}	
 	}
 }

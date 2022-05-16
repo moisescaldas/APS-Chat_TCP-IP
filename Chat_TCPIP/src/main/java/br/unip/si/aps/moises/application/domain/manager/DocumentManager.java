@@ -20,23 +20,23 @@ public class DocumentManager {
 	 * Singletton
 	 */
 	private static DocumentManager instance;
-	
+
 	private DocumentManager() {
-		documentsCache = new HashMap<>();
-		executor = Executors.newFixedThreadPool(1);
+		this.documentsCache = new HashMap<>();
+		this.executor = Executors.newSingleThreadExecutor();
 	}
-	
+
 	public static synchronized DocumentManager getInstance() {
 		return instance == null ? (instance = new DocumentManager()) : instance;
 	}
-	
+
 	/**
 	 * Atributos e Metodos da Classe
 	 */
 	private Map<RemoteUser, Document> documentsCache;
 	private ExecutorService executor;
 	private RemoteUser selectedUser;
-	
+
 	public void selectUser(RemoteUser user) {
 		executor.submit(() -> {
 			selectedUser = user;
@@ -44,20 +44,29 @@ public class DocumentManager {
 			Logger.getGlobal().info("Usuario [" + user + "] selecionado");
 		});
 	}
-	
-	public void put(RemoteUser user) {
-		executor.submit(() -> {
+
+	public Document put(RemoteUser user) {
+		Future<Document> future = executor.submit(() -> {
 			if (documentsCache.get(user) == null) {
-				documentsCache.put(user, new PlainDocument());
+				Document document = new PlainDocument();
+				documentsCache.put(user, document);
+				return document;
+			} else {
+				return null;
 			}
 		});
+		try {
+			return future.get();
+		} catch(Exception e) {
+			Logger.getGlobal().info(e.getMessage());
+			return null;
+		}
 	}
-	
+
 	public Document getDocument(RemoteUser user) {
 		Future<Document> future = executor.submit(() -> {
 			return documentsCache.get(user);
 		});
-		
 		try {
 			return future.get();
 		} catch(Exception e) {
