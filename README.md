@@ -1,7 +1,7 @@
 # Trabalho da APS SI5P30 - CHAT TCP/IP
 
 ## Integrantes
-- John
+- John Marcelino
 - Henrique Araujo
 - Fernando Schineider
 - Moises Costa Caldas
