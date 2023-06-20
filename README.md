@@ -8,7 +8,7 @@
 
 ## Sobre o Trabalho
 
-Trabalho para compor a apresentação da APS(Atividades praticas supervisionadas), foi desenvolvido um chat que se comunica através de sockets TCP/IP. A aplicação cliente desenvolvida em Java Swing é responsável por receber e enviar as mensagens. Já a aplicação servidor desenvolvida em Java e conteinerizada em docker, é responsável por mapear os clientes, trafegar com as mensagens, e informar aos clientes quais estão ativos na rede.
+Trabalho para compor a apresentação da APS(Atividades praticas supervisionadas), foi desenvolvido um chat que se comunica através de sockets TCP/IP. A aplicação cliente desenvolvida em Java Swing é responsável por receber e enviar as mensagens. Já a aplicação servidor desenvolvida em Java e conteinerizada em docker, é responsável por mapear os clientes, trafegar com as mensagens, e informar aos clientes quem está ativo na rede.
 
 Para a segurança das mensagens foi implementado um algoritmo de criptografia de ponta a ponta com RSA.
 
