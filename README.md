@@ -37,16 +37,16 @@ $ java -jar chat.jar
 
 Tela 1 - Conexão com o sistema
 
-![tela_conexao](Chat_TCPIP\telas\tela_conexao.png)
+![tela_conexao](https://github.com/moisescaldas/APS-Chat_TCP-IP/blob/main/Chat_TCPIP/telas/tela_conexao.png?raw=true)
 
 
 
 Tela 2 - Tela dos Chats
 
-![tela_chats](Chat_TCPIP\telas\tela_chats.png)
+![tela_chats](https://github.com/moisescaldas/APS-Chat_TCP-IP/blob/main/Chat_TCPIP/telas/tela_chats.png?raw=true)
 
 
 
 Tela 3 - Pacote de Rede
 
-![conteudo_pacote_tcp](Chat_TCPIP\telas\conteudo_pacote_tcp.png)
+![conteudo_pacote_tcp](https://github.com/moisescaldas/APS-Chat_TCP-IP/blob/main/Chat_TCPIP/telas/conteudo_pacote_tcp.png?raw=true)
